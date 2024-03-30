@@ -1,0 +1,38 @@
+\begin{titlepage}
+    % HACK for two-sided documents: ignore binding correction for cover page.
+    % Adapted from Markus Kohm's KOMA-Script titlepage=firstiscover handling.
+    % See http://mirrors.ctan.org/macros/latex/contrib/koma-script/scrkernel-title.dtx,
+    % \maketitle macro.
+    \oddsidemargin=\evensidemargin\relax
+    \textwidth=\dimexpr\paperwidth-2\evensidemargin-2in\relax
+    \hsize=\textwidth\relax
+
+    \centering
+
+    \vspace*{5mm}
+
+    \IfFileExists{template/logos/tum-logo-blue.png}{%
+        \includegraphics[height=20mm]{template/logos/tum-logo-blue.png}
+    }{%
+        \vspace*{20mm}
+    }
+
+    \vspace{20mm}
+
+    {\huge\MakeUppercase{TUM School of \getSchool{}} \par}
+
+    \vspace{5mm}
+    {\large\MakeUppercase{\getDepartment{}} \par}
+
+    {\large\MakeUppercase{\getChair{}} \par}
+
+    \vspace{15mm}
+
+    {\huge\bfseries \getTitle{} \par}
+
+    \vspace{10mm}
+    {\LARGE \getAuthor{}}
+
+\end{titlepage}
+
+

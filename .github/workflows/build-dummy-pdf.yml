@@ -1,0 +1,26 @@
+name: build-dummy-pdf
+
+on:
+    push:
+        branches:
+            - main
+    pull_request:
+        branches:
+            - main
+
+jobs:
+    build:
+        runs-on: ubuntu-latest
+        container: texlive/texlive:latest
+
+        steps:
+            - uses: actions/checkout@v3
+
+            - name: Build pdf
+              run: make pdf
+
+            - name: Upload pdf
+              uses: actions/upload-artifact@v3
+              with:
+                  name: thesis
+                  path: build/main.pdf

@@ -1,0 +1,21 @@
+{
+    "latex-workshop.latex.recipes": [
+        {
+            "name": "make",
+            "tools": ["make-pdf", "make-clean"]
+        }
+    ],
+    "latex-workshop.latex.tools": [
+        {
+            "name": "make-pdf",
+            "command": "make",
+            "args": ["pdf"]
+        },
+        {
+            "name": "make-clean",
+            "command": "make",
+            "args": ["clean"]
+        }
+    ],
+    "latex-workshop.latex.outDir": "./build",
+}

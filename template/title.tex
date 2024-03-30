@@ -1,0 +1,42 @@
+\begin{titlepage}
+    \centering
+
+    \vspace*{5mm}
+
+    \IfFileExists{template/logos/tum-logo-blue.png}{%
+        \includegraphics[height=20mm]{template/logos/tum-logo-blue.png}
+    }{%
+        \vspace*{20mm}
+    }
+
+    \vspace{20mm}
+    {\huge\MakeUppercase{School of \getSchool{}} \par}
+
+    \vspace{5mm}
+    {\large\MakeUppercase{\getDepartment{}} \par}
+
+    {\large\MakeUppercase{\getChair{}} \par}
+
+    \vspace{20mm}
+
+    {\huge\bfseries \getTitle{} \par}
+
+    \vspace{10mm}
+    {\huge\bfseries \foreignlanguage{ngerman}{\getTitleGer{}} \par}
+
+    \vspace{15mm}
+
+    \begin{tabular}{l l}
+        Author:            & \getAuthor{}         \\
+        Thesis Supervisor: & \getExaminer{}       \\
+        Advisor:           & \getAdvisor{}        \\
+        Submission Date:   & \getSubmissionDate{} \\
+    \end{tabular}
+
+    \vspace{25mm}
+    \IfFileExists{template/logos/esm-logo-square.png}{%
+        \vfill{}
+        \includegraphics[height=20mm]{template/logos/esm-logo-square.png}
+    }{}
+
+\end{titlepage}
