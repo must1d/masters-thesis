@@ -6,11 +6,12 @@
 \section{Dataset}
 Datasets such as CAMS (cite) or TNO (cite) provide GHG emissions in a 0.1 times 0.05 lat times long resolution which corresponds to ~5 by ~5 kilometers.
 This resolution is very low and urban data cannot effectively be extracted.
-For instance, a city contained within a 30km by 30km grid, would contain 6 by 6 by 15 values.
+For instance, a city contained within a 30km by 30km grid, would contain 6 by 6 cells.
 This is not enough to draw any meaningful information and conclusion. 
 Therefore, this thesis focues on the high res $2015$ and $2018$ TNO datasets are used.
 These are two high resolution, roughly 1km by 1km, emission inventory and thus high resolution emission fields in urban environments can be extracted.
-The inventory contains GHG emissions for each GNFR sector (cite), for each coordinate in a defined grid within Europe.
+The inventory contains GHG emissions for each GNFR sector (cite), with the road sector $F$ being split into $4$ sub sectors, for each coordinate in a defined grid within Europe.
+This results in $15$ emission values per gas per cell.
 For this thesis, only CO2 from fossil fuels are considered.
 However, the presented approaches can be directly applied for all types of GHG sources.
 
@@ -18,10 +19,10 @@ However, the presented approaches can be directly applied for all types of GHG s
 Urban environments differ from non-urban environments in terms of their emissions.
 For instance, urban environments often have a city center that generates a large portion of emissions as seen for example in Munich (picture of Munich).
 Therefore, as the focus of this thesis are urban environments, they have to be filtered from the TNO datasets.
-For this, a number of cities are selected from a public database (cite here).
+For this, a number of cities are selected from a public database by OpenDatasoft (cite here).
 Cities are filtered according to their population size.
 For this thesis, the population threshold is set to $100000$.
-The number of extracted cities is $2xx$.
+The resulting number of extracted cities is $2xx$.
 A list of all cities with the corresponding coordinates is appended in the appendix.
 
 From the filtered cities, the coordinates are used to extract emission fields.
@@ -32,7 +33,7 @@ For this thesis, emission fields have $32$ by $32$.
 
 The number of extracted emission fields is not enough to train a generative model.
 Thus, temporal scaling factors from (cite) are used to generate more samples.
-Scaling factors are applied to individual sectors.
+Scaling factors are applied to individual GNFR sectors.
 This results in $24 * 7 * 12 = 2016$ samples per city per year.
 The resulting dataset size is thus $2xx * 2 * 2016 = $ samples.
 To reduce the memory overhead, scaling factors are applied at sampling time and only the original data is kept in memory.
