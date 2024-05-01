@@ -82,5 +82,38 @@ The resulting scaling factor is thus $\frac{1 a}{2.5 * 10^6 kg}$
 \subsection{Architecture}
 
 \section{Evaluation}
+In order to evaluate the generative capbailities in the context of inverse problems, a compressed sensing problem is used for evaluation.
+This compressed sensing problem is based on the paper by Bora et al. as they mention that the performance of generative models can be assesed based on their provided problem statement.
+For this, a identically independent distributed matrix $A \in R^{m \times 15000}$ is sampled for each run.
+The following inverse problem is then solved using the minimization problem proposed by Bora et al.
+\begin{equation}
+    y = A x + \epsilon
+\end{equation}
+with $x$ being the emission fields $x^*$ in vectorized form.
+This inverse problem is equivalnt to taking taking $m$ measurements that is randomly linearly affected by any sector in any cell within the emission field grid.
+While this does not correspond to a typical transport model which follows the law of physics, this problem serves as a good proxy for evaluating the generative capbailities in the context of inverse problems of the trained VAE. 
 
+The evaluation is performed on scaled emission fields.
+
+The resulting pipeline is the following:
+\begin{enumerate}
+    \item Generate random A
+    \item Sample x from test set
+    \item Vectorize x
+    \item Compute y from forward model
+    \item Run reconstruction algorithm (minimization problem)
+    \item Unvectorize resulting x dach
+    \item Compare x with x dach
+\end{enumerate}
+
+Let $D$ be the decoder of the varitional autoencoder.
+Then, the generator $G: R^k \rightarrow R^{15000}$ can be written as $G(z) = \text{vec}(D(z))$, i.e. the generator G is the vectorization of the decoder of the VAE.
+
+The minimization problem
+\begin{equation}
+    z^* = \arg\min_{z}{\norm{A G(z) - y} + R(z)}
+\end{equation}
+with $R(z) = \norm{z}$ is solved using the Adam Optimizer (cite).
+For the learning rate, values are chosen based on the number of measurements, as seen in table (make table).
+These values are determined empirically.
 
