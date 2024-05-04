@@ -68,7 +68,7 @@ The validation and test emission fields are not transformed, except for a center
 
 \subsection{Scaling}
 Scaling is an important factor for machine learning.
-Large scale data can make training converge slow and instable (cite).
+Large-scale data can make training converge slow and instable (cite).
 Furthermore, regularization techniques such as batch normalization rely on scaled values (cite).
 A common technique for scaling values is min max scaling (cite).
 However, min max scaling is sensitive to outliers and thus not ideal for emission inventories where range of emissions within a city can largely differ.
@@ -82,6 +82,8 @@ The resulting scaling factor is thus $\frac{1 a}{2.5 * 10^6 kg}$
 \subsection{Architecture}
 
 \section{Evaluation}
+
+\subsection{Gaussian Measurements}
 In order to evaluate the generative capbailities in the context of inverse problems, a compressed sensing problem is used for evaluation.
 This compressed sensing problem is based on the paper by Bora et al. as they mention that the performance of generative models can be assesed based on their provided problem statement.
 For this, a identically independent distributed matrix $A \in R^{m \times 15000}$ is sampled for each run.
@@ -106,7 +108,7 @@ The resulting pipeline is the following:
     \item Compare x with x dach
 \end{enumerate}
 
-Let $D$ be the decoder of the varitional autoencoder.
+Let $D$ be the decoder of the variational autoencoder.
 Then, the generator $G: R^k \rightarrow R^{15000}$ can be written as $G(z) = \text{vec}(D(z))$, i.e. the generator G is the vectorization of the decoder of the VAE.
 
 The minimization problem
@@ -117,3 +119,10 @@ with $R(z) = \norm{z}$ is solved using the Adam Optimizer (cite).
 For the learning rate, values are chosen based on the number of measurements, as seen in table (make table).
 These values are determined empirically.
 
+The reconstruction algorithm is run for the following number of measurements:
+For each of the numbers, the reconstruction is run for each emission field in the test dataset.
+A random measurement matrix $A$ is generated and each of the $3$ algorithms solve the same inverse problem.
+The temporal transforms are disabled during evaluation which means that for each city only one emission field per year is used.
+The evaluation is run 5 times to reduce randomness resulting from random initialization of $z$.
+
+\subsection{Transport Model Measurements}
