@@ -125,4 +125,19 @@ A random measurement matrix $A$ is generated and each of the $3$ algorithms solv
 The temporal transforms are disabled during evaluation which means that for each city only one emission field per year is used.
 The evaluation is run 5 times to reduce randomness resulting from random initialization of $z$.
 
-\subsection{Transport Model Measurements}
+\subsection{Gaussian Plume Model}
+Gaussian sensing matrix do not represent the real the emission problem well.
+Instead of randomly samples sensing matrices, transport models should be used that indicate the sensitivity of measurements with resepect to physical grid cells based on the transport of molecules in the past.
+These transport models are computationally expensive to compute and in generel difficult to estimate on a per city basis.
+Thus, we apply the same idea as Benji in his work.
+We substitue typical transport models, such as STILT, with a Gaussian plume model.
+In his paper, Benji reconstructed the emission field without considering the indivudal sectors as contributors.
+In this thesis, a full reconstruction is attempted, i.e. all $15$ sectors are reconstructed.
+Therefore, the sensing matrix based on the Gaussian plume model must be adapted accordingly.
+
+The forward model is the following:
+\begin{equation}
+    y = [A, \dots, A] [x_{s_0}, \dots, x_{s_{14}}]^T
+\end{equation}
+$A$ is the Gaussian plume model for n measurements.
+$x_{s_i}$ is the emission field for a single sector.
