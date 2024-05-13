@@ -78,6 +78,16 @@ The inverse of the average is then used as the scaling factor.
 The resulting scaling factor is thus $\frac{1 a}{2.5 * 10^6 kg}$
 
 \section{Variational Autoencoder}
+The optimizer is AmsGrad (cite).
+The architecture is inspired by (Walking the Tightrope: An Investigation of the Convolutional Autoencoder Bottleneck cite).
+This means that the last layers before the fully connected layers has high width and height.
+The encoder uses 2 2-stride layers to halve the width and height of the emission field, resulting in a width/height of 16 and 8 respectively.
+The decoder makes use of tranpose conv layers to double the width/height of the emission field to get back to the original dimensions.
+In between these conv layers that change the width and height, residual layers (cite) are used.
+The conv layers in the residual layers have kernel size 2 and stride 1, thus retaining the width and height of the field when padding is used.
+For activation, LeakyRelu (cite) is used except at the output of the residual layers where ReLu (cite) is used.
+In addition, after every activation, except at the output of the residual layers, batch normalization (cite) is applied.
+The exact architecture with channels and number of layers can be seen in Figure .
 
 \subsection{Architecture}
 
@@ -141,3 +151,4 @@ The forward model is the following:
 \end{equation}
 $A$ is the Gaussian plume model for n measurements.
 $x_{s_i}$ is the emission field for a single sector.
+
