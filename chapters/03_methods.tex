@@ -6,9 +6,9 @@
 \section{Dataset}
 Datasets such as CAMS (cite) or TNO (cite) provide GHG emissions in a 0.1 times 0.05 lat times long resolution which corresponds to ~5 by ~5 kilometers.
 This resolution is very low and urban data cannot effectively be extracted.
-For instance, a city contained within a 30km by 30km grid, would contain 6 by 6 cells.
-This is not enough to draw any meaningful information and conclusion. 
-Therefore, this thesis focues on the high res $2015$ and $2018$ TNO datasets are used.
+For instance, a 30km by 30km grid around a city, would contain 6 by 6 cells.
+This is not enough to draw any meaningful information and conclusions.
+Therefore, this thesis focues on the high res $2015$ (cite) and $2018$ TNO datasets (cite).
 These are two high resolution, roughly 1km by 1km, emission inventory and thus high resolution emission fields in urban environments can be extracted.
 The inventory contains GHG emissions for each GNFR sector (cite), with the road sector $F$ being split into $4$ sub sectors, for each coordinate in a defined grid within Europe.
 This results in $15$ emission values per gas per cell.
@@ -21,41 +21,54 @@ For instance, urban environments often have a city center that generates a large
 Therefore, as the focus of this thesis are urban environments, they have to be filtered from the TNO datasets.
 For this, a number of cities are selected from a public database by OpenDatasoft (cite here).
 Cities are filtered according to their population size.
-For this thesis, the population threshold is set to $100000$.
-The resulting number of extracted cities is $2xx$.
-A list of all cities with the corresponding coordinates is appended in the appendix.
+For this thesis, the population threshold is set to $100.000$.
 
 From the filtered cities, the coordinates are used to extract emission fields.
-From the TNO dataset, $n$ by $n$ grids around the city center are extracted.
+From the TNO dataset, $51$ by $51$ grids around the city center are extracted.
 This corresponds to a dimension of n km by n km.
 While most cities are not even close to this size, this allows to later crop the fields to a desired size.
 For this thesis, emission fields have $32$ by $32$.
+
+Some cities may be too close to each other and thus result in leakage of data to test and validation sets.
+Thus, cities are filtered if they are too close to other cities.
+The following algorithm is used to guarantee no overlapping data.
+1) Get all cities currently extracted and determine the lat and lon distances to the current city
+2) Determine all cities that are within a threshold
+3) If there are none, add the current city and proceed to next city
+4) Else, check if the current city has a greater population size that all other cities that overlap
+5) If yes, removed the overlaping cities and add the current city to the cities.
+6) Else, ignore the city and proceed with next city
+
+The overall resulting amount of citiy emission fields per year, $2015$ and $2018$, is then $106$.
+A list of all cities with the corresponding coordinates is appended in the appendix.
 
 The number of extracted emission fields is not enough to train a generative model.
 Thus, temporal scaling factors from (cite) are used to generate more samples.
 Scaling factors are applied to individual GNFR sectors.
 This results in $24 * 7 * 12 = 2016$ samples per city per year.
-The resulting dataset size is thus $2xx * 2 * 2016 = $ samples.
+The resulting combined dataset size is thus $106 * 2 * 2016 = 45792$ individual emission fields with size $51$ by $51$.
 To reduce the memory overhead, scaling factors are applied at sampling time and only the original data is kept in memory.
 
-\subsection{Dataset split}
+\subsection{Dataset Filtering}
+% The dataset contains many cities.
+% However, not all of these cities have comparable emission fields.
+% In other terms, there may be outliers contained in the dataset that can throw of the trianing and evaluation of the model.
+% Especially since there are not many cities, outliers harm the training and evaluation of the model significantly.
+T.b.d.
+
+\subsection{Dataset Split}
 The emission fields are split into training, validation, and test data.
-The training data is used to train the model and updates its weights and makes up $\sim  70\%$ of the data.
-The validation data is used to evaluate the generalization capabilities of the model during training and makes up $\sim  15\%$.
-The test data is used for subsequent experiments and evaluations and makes up $\sim  15\%$.
+The test data is used for experiments and evaluations and makes up $t$ percent of the data.
+The model does not see the test data during training.
+The validation data is used to evaluate the generalization capabilities of the model during training and makes up $v$ percent of data.
+Finally, the training data is used to train the model and updates its weights and makes up $1 - v - t$ of the data.
 
-For splitting, the emission fields are first sorted alphabetically by the city name.
-Then, the first $15\%$ of cities are assigned to the test data.
-This makes the split deterministic and thus reproducible.
-
-The remaining cities are then randomly shuffled.
-Finally, the first $\frac{0.15}{0.85}$ of cities are assigned to the validation set.
-The remaining cities are assigned to the training set.
+To split the data deterministically and reproducibly, the city names are sorted alphabetically.
+Then, the first $t$ percent of city names are assigned to the test set.
+Of the remaining $1 - t$ percent of city names, the first $\frac{v}{1 - t}$ percent are assigned to the validation set.
+The remaining city names are assigned to the training data.
 
 Maybe make a diagram here.
-
-The number of samples in training, validation, and test set is given in table (make table).
-A list of the cities in the test set is appended in appendix (add appendix).
 
 \subsection{Data Augmentation}
 To improve the generalization abilities of the model CITE, common image augmentation techniques are applied (to cite) to the emission fields in the training data.
@@ -78,22 +91,89 @@ The inverse of the average is then used as the scaling factor.
 The resulting scaling factor is thus $\frac{1 a}{2.5 * 10^6 kg}$
 
 \section{Variational Autoencoder}
-The optimizer is AmsGrad (cite).
-The architecture is inspired by (Walking the Tightrope: An Investigation of the Convolutional Autoencoder Bottleneck cite).
-This means that the last layers before the fully connected layers has high width and height.
-The encoder uses 2 2-stride layers to halve the width and height of the emission field, resulting in a width/height of 16 and 8 respectively.
-The decoder makes use of tranpose conv layers to double the width/height of the emission field to get back to the original dimensions.
-In between these conv layers that change the width and height, residual layers based on "Identity Mappings in Deep Residual Networks" (cite) instead of ResNet layers (cite) are used as they perform better.
-The conv layers in the residual layers have kernel size 2 and stride 1, thus retaining the width and height of the field when padding is used.
-For activation, LeakyRelu (cite) is used except at the output of the residual layers where ReLu (cite) is used.
-In addition, after every activation, except at the output of the residual layers, batch normalization (cite) is applied.
-The exact architecture with channels and number of layers can be seen in Figure , created with the following GitHub Repository (https://github.com/HarisIqbal88/PlotNeuralNet?tab=readme-ov-file) (cite).
+Some text about generative models and variational autoencoder (cite) in its original form being the chosen one.
 
-Instead of pooling and upsampling layers, convolutional and transpose convolutional layers are used, inspired by "Striving for Simplicity: The All Convolutional Net" (cite)
+\subsection{Architecture Search}
+Searching for optimal hyperparamaters is a challenging task with many different approaches (cite).
+In particular, designing a good architecture takes a lot of trial and error.
+Thus, different architectures are explored to determine a suitable one.
+For this, first a basline architecture is established.
+Then, different variations of this architecture are explored and trained.
+The architecture of the model with the best performance is then chosen as the model architecture for this thesis.
 
-Dropout with $10\%$ is added after the ReLU in between both conv layers "Wide Residual Networks" (cite).
+Each variation is trained with for $20$ epochs on the TNO 2015 data only to decrease the architecture bias during search.
+The dataset split is $t=0.15$, $v=0.15$, with the test set not being used at all.
+The batch size is $32$.
+As optimizer AmsGrad is used (cite) with a learning rate of $1$.
+Gradients are clipped at $0.5$.
+% Add any further hyperparameters.
 
-\subsection{Architecture}
+\subsection{Baseline Architecture}
+The baseline architecture is inspired by (Walking the Tightrope: An Investigation of the Convolutional Autoencoder Bottleneck cite).
+This means that the bottleneckl layers have a high width and height.
+As the input width and height of the emission fields are $32$ by $32$, the Bottleneck width and height are chosen as $8$ by $8$.
+Inspired by "Striving for Simplicity: The All Convolutional Net" (cite), to reduce the width and height dimensions, instead of using pooling operations, $2$ strided convolutions are used.
+The strided convolutions, depicted in Figure, have kernel 2 and stride 2, thus halfing the size.
+\begin{figure}[h!]
+    \centering
+    \includegraphics[]{figures/model_architecture/build/conv_layer.pdf}
+    \caption{Conv Layer}
+\end{figure}
+The strided convolution layers make use of the LeakyReLu activation function (cite) and batch normalization (cite), as a regularization technique.
+
+Vice versa, in the decoder, 2 strided transpose convolutions with the same parameters are used to double the width and height.
+\begin{figure}[h!]
+    \centering
+    \includegraphics[]{figures/model_architecture/build/deconv_layer.pdf}
+    \caption{DeConv Layer}
+\end{figure}
+
+In between the strided convolutions residual convolutional layers (ResConv) (cite) are used.
+They can be seen in Figure.
+\begin{figure}[h!]
+    \centering
+    \includegraphics[]{figures/model_architecture/build/residual_conv_layer.pdf}
+    \caption{ResConv Layer}
+\end{figure}
+The ResConv layers make use of two convolutions with kernel 3 and padding 1 to retain the width and height dimensions.
+The output activation is ReLu (cite).
+In between the two convolutional layers, LeakyReLu is used again.
+Again, batchnorm is applied.
+\begin{figure}[h!]
+    \centering
+    \includegraphics[width=\textwidth]{figures/model_architecture/build/vae_encoder.pdf}
+    \caption{Baseline Encoder Architectur (generated with (https://github.com/HarisIqbal88/PlotNeuralNet?tab=readme-ov-file) (cite))}
+\end{figure}
+\begin{figure}[h!]
+    \centering
+    \includegraphics[width=\textwidth]{figures/model_architecture/build/vae_decoder.pdf}
+    \caption{Baseline Decoder Architecture}
+\end{figure}
+As can be seen in Figure and Figure, the 2 strided convolutions are located between $2$ layers of ResConv layers each, in the encoder and decoder.
+Fully connected layers are used at the end of the encoder and beginning of the decoder to achive a hidden dimension $256$ of the latent space. 
+The number of parameters is \dots.
+
+The loss function used is the typical VAE loss with MSE loss and \dots .
+\begin{equation}
+    L(x, \hat{x}) = 1 + 2
+\end{equation}
+In addition to the loss, at each step the SSIM (cite) is computed as it provides qualitatively better comparison between two emission fields than the MSE as it takes structure into account.
+
+\subsection{Explored Variations}
+The following variations are explored
+\begin{enumerate}
+    \item conv layers to increase / decrease depth and pooling layers to decrease width/height and upsample layers to increase width/height
+    \item 3 layers in the middle
+    \item 3 layers everywhere
+    \item 4 layers everywhere
+    \item 4 layers in the middle
+    \item residual layers based on "Identity Mappings in Deep Residual Networks" (cite) instead of ResConv layers from Figure
+    \item dropout based on "Wide Residual Networks" (cite)
+\end{enumerate}
+
+\subsection{Final Architecture}
+The final model is trained on both the TNO 2015 and 2018 data.
+\dots
 
 \section{Evaluation}
 
