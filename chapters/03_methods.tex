@@ -19,7 +19,7 @@ However, the presented approaches can be directly applied for all types of GHG s
 Urban environments differ from non-urban environments in terms of their emissions.
 For instance, urban environments often have a city center that generates a large portion of emissions as seen for example in Munich (Figure).
 Therefore, as the focus of this thesis are urban environments, they have to be filtered from the TNO datasets.
-For this, a number of cities are selected from a public database by OpenDatasoft \parencite{OpenDataSoft}.
+For this, several cities are selected from a public database by OpenDatasoft \parencite{OpenDataSoft}.
 Cities are filtered according to their population size.
 For this thesis, the population threshold is set to $100.000$.
 
@@ -43,7 +43,7 @@ The overall resulting amount of citiy emission fields per year, $2015$ and $2018
 A list of all cities with the corresponding coordinates is appended in the appendix.
 
 The number of extracted emission fields is not enough to train a generative model.
-Thus, temporal scaling factors from (cite) are used to generate more samples.
+Thus, temporal scaling factors from \parencite{ScalingFactors} are used to generate more samples.
 Scaling factors are applied to individual GNFR sectors.
 This results in $24 * 7 * 12 = 2016$ samples per city per year.
 The resulting combined dataset size is thus $106 * 2 * 2016 = 45792$ individual emission fields with size $51$ by $51$.
@@ -82,7 +82,7 @@ The validation and test emission fields are not transformed, except for a center
 \subsection{Scaling}
 Scaling is an important factor for machine learning.
 Large-scale data can make training converge slow and instable (cite).
-Furthermore, regularization techniques such as batch normalization rely on scaled values (cite).
+Furthermore, regularization techniques such as batch normalization \parencite{BatchNorm} rely on scaled values (cite).
 A common technique for scaling values is min max scaling (cite).
 However, min max scaling is sensitive to outliers and thus not ideal for emission inventories where range of emissions within a city can largely differ.
 Instead, robust scaling (cite) can be applied.
@@ -91,10 +91,10 @@ The inverse of the average is then used as the scaling factor.
 The resulting scaling factor is thus $\frac{1 a}{2.5 * 10^6 kg}$
 
 \section{Variational Autoencoder}
-Some text about generative models and variational autoencoder (cite) in its original form being the chosen one.
+Some text about generative models and variational autoencoder \parencite{VAE} in its original form being the chosen one.
 
 \subsection{Architecture Search}
-Searching for optimal hyperparamaters is a challenging task with many different approaches (cite).
+Searching for optimal hyperparamaters is a challenging task with many different approaches \parencite{HyperParameters}.
 In particular, designing a good architecture takes a lot of trial and error.
 Thus, different architectures are explored to determine a suitable one.
 For this, first a basline architecture is established.
@@ -104,22 +104,22 @@ The architecture of the model with the best performance is then chosen as the mo
 Each variation is trained with for $20$ epochs on the TNO 2015 data only to decrease the architecture bias during search.
 The dataset split is $t=0.15$, $v=0.15$, with the test set not being used at all.
 The batch size is $32$.
-As optimizer AmsGrad is used (cite) with a learning rate of $1$.
+As optimizer AmsGrad \parencite{AmsGrad} is used with a learning rate of $\dots$.
 Gradients are clipped at $0.5$.
 % Add any further hyperparameters.
 
 \subsection{Baseline Architecture}
-The baseline architecture is inspired by (Walking the Tightrope: An Investigation of the Convolutional Autoencoder Bottleneck cite).
+The baseline architecture is inspired by \parencite{Tightrope}.
 This means that the bottleneckl layers have a high width and height.
 As the input width and height of the emission fields are $32$ by $32$, the Bottleneck width and height are chosen as $8$ by $8$.
-Inspired by "Striving for Simplicity: The All Convolutional Net" (cite), to reduce the width and height dimensions, instead of using pooling operations, $2$ strided convolutions are used.
+Inspired by \parencite{AllConvolutional} , to reduce the width and height dimensions, instead of using pooling operations, $2$ strided convolutions are used.
 The strided convolutions, depicted in Figure, have kernel 2 and stride 2, thus halfing the size.
 \begin{figure}[h!]
     \centering
     \includegraphics[]{figures/model_architecture/build/conv_layer.pdf}
     \caption{Conv Layer}
 \end{figure}
-The strided convolution layers make use of the LeakyReLu activation function (cite) and batch normalization (cite), as a regularization technique.
+The strided convolution layers make use of the LeakyReLu activation function and batch normalization \parencite{BatchNorm}, as a regularization technique.
 
 Vice versa, in the decoder, 2 strided transpose convolutions with the same parameters are used to double the width and height.
 \begin{figure}[h!]
@@ -128,26 +128,26 @@ Vice versa, in the decoder, 2 strided transpose convolutions with the same param
     \caption{DeConv Layer}
 \end{figure}
 
-In between the strided convolutions residual convolutional layers (ResConv) (cite) are used.
+In between the strided convolutions residual convolutional layers (ResConv) \parencite{ResNet} are used.
 They can be seen in Figure.
 \begin{figure}[h!]
     \centering
     \includegraphics[]{figures/model_architecture/build/residual_conv_layer.pdf}
-    \caption{ResConv Layer}
+    \caption{ResConv Layer \parencite{ResNet}}
 \end{figure}
 The ResConv layers make use of two convolutions with kernel 3 and padding 1 to retain the width and height dimensions.
-The output activation is ReLu (cite).
+The output activation is ReLu.
 In between the two convolutional layers, LeakyReLu is used again.
 Again, batchnorm is applied.
 \begin{figure}[h!]
     \centering
     \includegraphics[width=\textwidth]{figures/model_architecture/build/vae_encoder.pdf}
-    \caption{Baseline Encoder Architectur (generated with (https://github.com/HarisIqbal88/PlotNeuralNet?tab=readme-ov-file) (cite))}
+    \caption{Baseline Encoder Architecture (generated with \parencite{NNVisualization})}
 \end{figure}
 \begin{figure}[h!]
     \centering
     \includegraphics[width=\textwidth]{figures/model_architecture/build/vae_decoder.pdf}
-    \caption{Baseline Decoder Architecture}
+    \caption{Baseline Decoder Architecture (generated with \parencite{NNVisualization})}
 \end{figure}
 As can be seen in Figure and Figure, the 2 strided convolutions are located between $2$ layers of ResConv layers each, in the encoder and decoder.
 Fully connected layers are used at the end of the encoder and beginning of the decoder to achive a hidden dimension $256$ of the latent space. 
@@ -157,15 +157,15 @@ The loss function used is the typical VAE loss with MSE loss and \dots .
 \begin{equation}
     L(x, \hat{x}) = 1 + 2
 \end{equation}
-In addition to the loss, at each step the SSIM (cite) is computed as it provides qualitatively better comparison between two emission fields than the MSE as it takes structure into account.
+In addition to the loss, at each step the SSIM \parencite{SSIM} is computed as it provides qualitatively better comparison between two emission fields than the MSE as it takes structure into account.
 
 \subsection{Explored Variations}
 The following variations are explored
 \begin{enumerate}
     \item conv layers to increase / decrease depth and pooling layers to decrease width/height and upsample layers to increase width/height
     \item 3 layers everywhere
-    \item residual layers based on "Identity Mappings in Deep Residual Networks" (cite) instead of ResConv layers from Figure
-    \item dropout (cite) (look at "Wide Residual Networks" for source for Dropout) based on "Wide Residual Networks" (cite)
+    \item residual layers based on \parencite{IdentityMappings} instead of ResConv layers from Figure
+    \item dropout \parencite{Dropout} based on \parencite{WideResNet}
 \end{enumerate}
 
 \subsection{Final Architecture}
@@ -178,7 +178,7 @@ The final model is trained on both the TNO 2015 and 2018 data.
 In order to evaluate the generative capbailities in the context of inverse problems, a compressed sensing problem is used for evaluation.
 This compressed sensing problem is based on the paper by Bora et al. as they mention that the performance of generative models can be assesed based on their provided problem statement.
 For this, a identically independent distributed matrix $A \in R^{m \times 15000}$ is sampled for each run.
-The following inverse problem is then solved using the minimization problem proposed by Bora et al.
+The following inverse problem is then solved using the minimization problem proposed by Bora et al \parencite{CSUsingAI}.
 \begin{equation}
     y = A x + \epsilon
 \end{equation}
@@ -206,7 +206,7 @@ The minimization problem
 \begin{equation}
     z^* = \arg\min_{z}{\norm{A G(z) - y} + R(z)}
 \end{equation}
-with $R(z) = \norm{z}$ is solved using the Adam Optimizer (cite).
+with $R(z) = \norm{z}$ is solved using the Adam Optimizer \parencite{Adam}.
 For the learning rate, values are chosen based on the number of measurements, as seen in table (make table).
 These values are determined empirically.
 
