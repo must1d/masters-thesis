@@ -141,19 +141,20 @@ In between the two convolutional layers, LeakyReLu is used again.
 Again, batchnorm is applied.
 \begin{figure}[h!]
     \centering
-    \includegraphics[width=\textwidth]{figures/model_architecture/build/vae_encoder.pdf}
+    \includegraphics[width=\textwidth]{figures/model_architecture/build/baseline_vae_encoder.pdf}
     \caption{Baseline Encoder Architecture (generated with \parencite{NNVisualization})}
 \end{figure}
 \begin{figure}[h!]
     \centering
-    \includegraphics[width=\textwidth]{figures/model_architecture/build/vae_decoder.pdf}
+    \includegraphics[width=\textwidth]{figures/model_architecture/build/baseline_vae_decoder.pdf}
     \caption{Baseline Decoder Architecture (generated with \parencite{NNVisualization})}
 \end{figure}
 As can be seen in Figure and Figure, the 2 strided convolutions are located between $2$ layers of ResConv layers each, in the encoder and decoder.
 Fully connected layers are used at the end of the encoder and beginning of the decoder to achive a hidden dimension $256$ of the latent space. 
+The last ResConv layers does not use batch normalization.
 The number of parameters is \dots.
 
-The loss function used is the typical VAE loss with MSE loss and \dots .
+The loss function used is the typical VAE loss with MSE loss as recontruction loss and Elbo \parencite{VAE} \dots .
 \begin{equation}
     L(x, \hat{x}) = 1 + 2
 \end{equation}
@@ -163,13 +164,65 @@ In addition to the loss, at each step the SSIM \parencite{SSIM} is computed as i
 The following variations are explored
 \begin{enumerate}
     \item conv layers to increase / decrease depth and pooling layers to decrease width/height and upsample layers to increase width/height
-    \item 3 layers everywhere
-    \item residual layers based on \parencite{IdentityMappings} instead of ResConv layers from Figure
-    \item dropout \parencite{Dropout} based on \parencite{WideResNet}
+    \item upsampling emission fields to $64$ by $64$ and then applying convlutions; in decoder max pooling to downsample $64$ by $64$ to $32$ by $32$
+    \item more depth; instead of doubling depth, quadrupling it
+    \item 2 conv layers for changing width and height instead of one strided convolution
+    \item 3 ResConv layers everywhere
+    \item residual layers with identity mappings depicted in Figure based on \parencite{IdentityMappings} instead of ResConv layers from Figure
+    \item residual layers with identity mappings with dropout \parencite{Dropout} based on \parencite{WideResNet} (add explanation)
 \end{enumerate}
 
+\begin{figure}[h!]
+    \centering
+    \includegraphics[]{figures/model_architecture/build/residual_conv_with_im_layer.pdf}
+    \caption{ResConv Layer With Identity Mappings \parencite{IdentityMappings}}
+\end{figure}
+
+In Figure , the validation losses and validation SSIM can be seen from the 20 epoch trianing runs.
+
+\begin{figure}
+    \centering
+    \begin{subfigure}{.5\textwidth}
+        \centering
+        \includegraphics[width=\linewidth]{figures/architecture_variations/validations_loss.png}
+        \caption{Validation Loss}
+        \label{fig:sub1}
+    \end{subfigure}%
+    \begin{subfigure}{.5\textwidth}
+        \centering
+        \includegraphics[width=\linewidth]{figures/architecture_variations/validation_ssim.png}
+        \caption{Validation SSIM}
+        \label{fig:sub2}
+    \end{subfigure}
+    \caption{Performance of Variations on Validation Data During Training}
+    \label{fig:test}
+\end{figure}
+
+Add some observations.
+
 \subsection{Final Architecture}
-The final model is trained on both the TNO 2015 and 2018 data.
+From the previous subsection, it can be concluded that the baseline architecture performs very well.
+The following changes are made to result in the final architecture.
+First, the residual layers in Figure  with identity mappings are used.
+Furthermore, they are extended with dropout as proposed in \parencite{WideResNet} in the \dots.
+Finally, the number of residual layers are increased to $3$.
+The encoder and decoder respectively can be seen in Figure and Figure.
+\begin{figure}[h!]
+    \centering
+    \includegraphics[width=\textwidth]{figures/model_architecture/build/final_vae_encoder.pdf}
+    \caption{Final Encoder Architecture (generated with \parencite{NNVisualization})}
+\end{figure}
+\begin{figure}[h!]
+    \centering
+    \includegraphics[width=\textwidth]{figures/model_architecture/build/final_vae_decoder.pdf}
+    \caption{Final Decoder Architecture (generated with \parencite{NNVisualization})}
+\end{figure}
+The latent dimension $d$ which was kept at $d = 256$ for the "ablation study" is now kept parametrizable.
+In fact, for this thesis, two different latent dimensions are explored: $d = 128$ and $d = 256$.
+The number of parameters for $d = 128$ and $d = 256$ are \dots for the encoder and decoder \dots.
+
+Two models are trained on both the TNO 2015 and 2018 data for $200$ epochs.
+All relevant hyperparamaters are kept the same as in the the variations subsection.
 \dots
 
 \section{Evaluation}

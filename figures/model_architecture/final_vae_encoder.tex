@@ -27,9 +27,9 @@
 \pic[shift={(2,0,0)}] at (input-east) {Box={
     name=res_conv_1, 
     caption=ResConv,
-    xlabel={{"15"},{"15"}}, ylabel=32,
+    xlabel={{"15"},{"15"},{"15"}}, ylabel=32,
     fill=\ResConvColor,
-    height=40, width={4,4}, depth=40
+    height=40, width={4, 4, 4}, depth=40
 }};
 
 \pic[shift={(0,0,0)}] at (res_conv_1-east) {Box={
@@ -43,9 +43,9 @@
 \pic[shift={(2,0,0)}] at (conv_1-east) {Box={
     name=res_conv_2, 
     caption=ResConv,
-    xlabel={{"30"},{"30"}}, ylabel=16,
+    xlabel={{"30"},{"30"},{"30"}}, ylabel=16,
     fill=\ResConvColor,
-    height=20, width={8, 8}, depth=20
+    height=20, width={8, 8, 8}, depth=20
 }};
 
 \pic[shift={(0,0,0)}] at (res_conv_2-east) {Box={
@@ -59,15 +59,15 @@
 \pic[shift={(2,0,0)}] at (conv_2-east) {Box={
     name=res_conv_3, 
     caption=ResConv,
-    xlabel={{"60"},{"60"}}, ylabel=8,
+    xlabel={{"60"},{"60"},{"60"}}, ylabel=8,
     fill=\ResConvColor,
-    height=10, width={16, 16}, depth=10
+    height=10, width={16, 16, 16}, depth=10
 }};
 
 \pic[shift={(3,0,3)}] at (res_conv_3-east) {Box={
     name=fc1,
     caption=FullyConnected,
-    xlabel={{"1",}}, ylabel=256,
+    xlabel={{"1",}}, ylabel=$d$,
     fill=\FcColor,
     height=35, width=3, depth=3
 }};
@@ -75,7 +75,7 @@
 \pic[shift={(3,0,-3)}] at (res_conv_3-east) {Box={
     name=fc2,
     caption=FullyConnected,
-    xlabel={{"1",}}, ylabel=256,
+    xlabel={{"1",}}, ylabel=$d$,
     fill=\FcColor,
     height=35, width=3, depth=3
 }};
