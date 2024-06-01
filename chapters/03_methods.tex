@@ -4,22 +4,22 @@
 \chapter{Methods}\label{chapter:methods}
 
 \section{Dataset}
-Datasets such as CAMS (cite) or TNO (cite) provide GHG emissions in a 0.1 times 0.05 lat times long resolution which corresponds to ~5 by ~5 kilometers.
+Datasets such as CAMS \parencite{CAMS} or TNO \parencite{TNO_LowRes}  provide GHG emissions in a 0.1 times 0.05 lat times long resolution which corresponds to ~5 by ~5 kilometers.
 This resolution is very low and urban data cannot effectively be extracted.
-For instance, a 30km by 30km grid around a city, would contain 6 by 6 cells.
-This is not enough to draw any meaningful information and conclusions.
-Therefore, this thesis focues on the high res $2015$ (cite) and $2018$ TNO datasets (cite).
+For instance, a city contained within a 30km by 30km grid, would contain 6 by 6 cells.
+This is not enough to draw any meaningful information and conclusion. 
+Therefore, this thesis focues on the high res $2015$ \parencite{TNO_HighRes15} and $2018$ \parencite{TNO_HighRes18} TNO datasets are used.
 These are two high resolution, roughly 1km by 1km, emission inventory and thus high resolution emission fields in urban environments can be extracted.
-The inventory contains GHG emissions for each GNFR sector (cite), with the road sector $F$ being split into $4$ sub sectors, for each coordinate in a defined grid within Europe.
+The inventory contains GHG emissions for each GNFR sector \parencite{GNFR_Sectors}, with the road sector $F$ being split into $4$ sub sectors, for each coordinate in a defined grid within Europe.
 This results in $15$ emission values per gas per cell.
 For this thesis, only CO2 from fossil fuels are considered.
 However, the presented approaches can be directly applied for all types of GHG sources.
 
 \subsection{Urban Emission Fields}
 Urban environments differ from non-urban environments in terms of their emissions.
-For instance, urban environments often have a city center that generates a large portion of emissions as seen for example in Munich (picture of Munich).
+For instance, urban environments often have a city center that generates a large portion of emissions as seen for example in Munich (Figure).
 Therefore, as the focus of this thesis are urban environments, they have to be filtered from the TNO datasets.
-For this, a number of cities are selected from a public database by OpenDatasoft (cite here).
+For this, a number of cities are selected from a public database by OpenDatasoft \parencite{OpenDataSoft}.
 Cities are filtered according to their population size.
 For this thesis, the population threshold is set to $100.000$.
 
