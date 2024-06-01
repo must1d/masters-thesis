@@ -163,12 +163,9 @@ In addition to the loss, at each step the SSIM (cite) is computed as it provides
 The following variations are explored
 \begin{enumerate}
     \item conv layers to increase / decrease depth and pooling layers to decrease width/height and upsample layers to increase width/height
-    \item 3 layers in the middle
     \item 3 layers everywhere
-    \item 4 layers everywhere
-    \item 4 layers in the middle
     \item residual layers based on "Identity Mappings in Deep Residual Networks" (cite) instead of ResConv layers from Figure
-    \item dropout based on "Wide Residual Networks" (cite)
+    \item dropout (cite) (look at "Wide Residual Networks" for source for Dropout) based on "Wide Residual Networks" (cite)
 \end{enumerate}
 
 \subsection{Final Architecture}
