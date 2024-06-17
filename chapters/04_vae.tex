@@ -44,7 +44,7 @@ The strided convolutions, depicted in Figure, have kernel 2 and stride 2, thus h
 
 The strided convolution layers make use of the LeakyReLu activation function and batch normalization \parencite{BatchNorm}, as a regularization technique.
 
-Vice versa, in the decoder, 2 strided transpose convolutions with the same parameters are used to double the width and height.
+Vice versa, in the decoder, 2 strided transpose convolutions with the same parameters are used to double the width and height instead of upsampling layers.
 
 In between the strided convolutions residual convolutional layers (ResConv) \parencite{ResNet} are used.
 They can be seen in Figure.
@@ -136,25 +136,28 @@ The encoder and decoder respectively can be seen in Figure and Figure.
     \caption{Final Decoder Architecture (generated with \parencite{NNVisualization})}
 \end{figure}
 The latent dimension $d$ which was kept at $d = 256$ for the "ablation study" is now kept parametrizable.
-In fact, for this thesis, two different latent dimensions are explored: $d = 128$ and $d = 256$.
-The number of parameters for $d = 128$ and $d = 256$ are \dots for the encoder and decoder \dots.
+In fact, for this thesis, different latent dimensions are explored: $d \in {256, 512, 1024, 2048}$.
+The number of parameters of the model in dependence of $d$ are \dots.
 
-Two models are trained on both the TNO 2015 and 2018 data for $100$ epochs.
+The models are trained on both the TNO 2015 and 2018 data for $100$ epochs.
+The dataset split is $t = 0.13$ and $v = 0.15$, resulting in $13$ cities in the test, $15$ cities in the validation, and $74$ cities in the training set.
+The exact split can be seen in appendix \dots.
 The weights of the model with the highest validation SSIM during the $100$ epochs is stored.
-All relevant hyperparamaters are kept the same as in the the variations subsection.
-\dots
-Add plots of losses.
-The gap between train loss and validation loss is not related to overfitting
-Explain that validation and training set have different mean values.
-If the reconstruction loss is adjusted for the mean values, then the valdiation and training loss are very close to each other.
-Overall, there is small overfitting, but nothing to dramatic.
-For the 128 model, more overfitting can be observed.
+All other relevant hyperparamaters are kept the same as in the the variations subsection.
+
+The training losses, SSIM, and mean MSE can be seen in Figure for each $d$.
+(add Figure).
+It can be observed that there is overfitting present in the data.
+This may be related to samples like London or Berlin in the trianing data that steer the loss, resulting in overfitting to these cities, due to their size of emissions.
+The amount of overfitting decreases with an increase in $d$.
+
 
 \section{Fine-tuning}
 Fine-tuning is a popular technique to steer a model to do somthing more specific \cite{FineTuning}.
 In the case of this thesis, fine-tuning the trained model to specific cities may make sense to achieve more precise recontruction.
+The idea is that a generative model can learn the structure of the city and focus on differences of emissions due to observed data.
 Thus, fine-tuning is evaluated in this thesis.
-For this, the three for the case studies chosen cities can be used.
+For this, the three for the case studies chosen cities are used.
 
 During fine-tuning, the weights of the original models are updated.
 The learning rate is reduced.
@@ -163,6 +166,6 @@ In our case, we chose $1e-x$ as learning rate.
 For fine-tuning, the TNO 2015 data is used.
 Later, for evaluation the TNO 2018 is used.
 
-To prevent the model from overfitting to the 2015 data which would prevent the model from finding previously unknown, i.e. during the bottom up estimations, emitters, sparse unknown emitters are introdcued.
+To prevent the model from overfitting to the 2015 data and train the model to generalize to unknown emitters, i.e. during the bottom up estimations, the following things are done \dots.
 
 
