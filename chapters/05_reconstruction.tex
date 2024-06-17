@@ -1,0 +1,81 @@
+% !TeX root = ../main.tex
+% Add the above to each chapter to make compiling the PDF easier in some editors.
+
+\chapter{Compressed Sensing}\label{chapter:compressed_sensing}
+
+\section{Inverse Problems}
+
+\subsection{Gaussian Measurements}
+In order to evaluate the generative capbailities in the context of inverse problems, a compressed sensing problem is used for evaluation.
+This compressed sensing problem is based on the paper by Bora et al. as they mention that the performance of generative models can be assesed based on their provided problem statement.
+For this, a identically independent distributed matrix $A \in R^{m \times 15000}$ is sampled for each run.
+The following inverse problem is then solved using the minimization problem proposed by Bora et al \parencite{CSUsingAI}.
+\begin{equation}
+    y = A x + \epsilon
+\end{equation}
+with $x$ being the emission fields $x^*$ in vectorized form.
+This inverse problem is equivalnt to taking taking $m$ measurements that is randomly linearly affected by any sector in any cell within the emission field grid.
+While this does not correspond to a typical transport model which follows the law of physics, this problem serves as a good proxy for evaluating the generative capbailities in the context of inverse problems of the trained VAE. 
+
+The evaluation is performed on scaled emission fields.
+
+The resulting pipeline is the following:
+\begin{enumerate}
+    \item Generate random A
+    \item Sample x from test set
+    \item Vectorize x
+    \item Compute y from forward model
+    \item Run reconstruction algorithm (minimization problem)
+    \item Unvectorize resulting x dach
+    \item Compare x with x dach
+\end{enumerate}
+
+The reconstruction algorithm is run for the following number of measurements:
+For each of the numbers, the reconstruction is run for each emission field in the test dataset.
+A random measurement matrix $A$ is generated and each of the $3$ algorithms solve the same inverse problem.
+The temporal transforms are disabled during evaluation which means that for each city only one emission field per year is used.
+The evaluation is run 5 times to reduce randomness resulting from random initialization of $z$.
+
+\subsection{Gaussian Plume Model}
+Gaussian sensing matrix do not represent the real the emission problem well.
+Instead of randomly samples sensing matrices, transport models should be used that indicate the sensitivity of measurements with resepect to physical grid cells based on the transport of molecules in the past.
+These transport models are computationally expensive to compute and in generel difficult to estimate on a per city basis.
+Thus, we apply the same idea as Benji in his work.
+We substitue typical transport models, such as STILT, with a Gaussian plume model.
+In his paper, Benji reconstructed the emission field without considering the indivudal sectors as contributors.
+In this thesis, a full reconstruction is attempted, i.e. all $15$ sectors are reconstructed.
+Therefore, the sensing matrix based on the Gaussian plume model must be adapted accordingly.
+
+The forward model is the following:
+\begin{equation}
+    y = [A, \dots, A] [x_{s_0}, \dots, x_{s_{14}}]^T
+\end{equation}
+$A$ is the Gaussian plume model for n measurements.
+$x_{s_i}$ is the emission field for a single sector.
+
+\section{Inverse Problem Solvers}
+
+\subsection{Generative Model Solver}
+Let $D: R^d \rightarrow R^{32 \times 32 \times 15}$ be the decoder of the variational autoencoder.
+Then, the generator $G: R^d \rightarrow R^{15000}$ can be written as $G(z) = \text{vec}(D(z))$, i.e. the generator G is the vectorization of the decoder of the VAE.
+
+The minimization problem
+\begin{equation}
+    z^* = \arg\min_{z}{\norm{A G(z) - y} + R(z)}
+\end{equation}
+with regularization term $R(z) = \norm{z}$ is solved numerically using the Adam Optimizer \parencite{Adam}.
+For the learning rate, values are chosen based on the number of measurements, as seen in table (make table).
+These values are determined empirically.
+
+\subsection{LASSO}
+To assess the capabilities of the generative model against other approaches, the sparse reconstruction algorithm using the LASSO objective is used.
+\begin{equation}
+    LASSO = 
+\end{equation}
+Scaling factor $\alpha$ is chosen as $0.1$, like in Bora et als paper.
+In addition to the LASSO in the original basis, the problems is transformed into two further bases.
+The first transform used for this is the discrete cosine transform.
+The cosine coefficients are computed
+The second transform is the discrete wavelet transform.
+Wavelet coefficients are computed using \parencite{PyWavelets}.
+Transformations are applied per sector.
