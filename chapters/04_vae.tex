@@ -136,7 +136,7 @@ The encoder and decoder respectively can be seen in Figure and Figure.
     \caption{Final Decoder Architecture (generated with \parencite{NNVisualization})}
 \end{figure}
 The latent dimension $d$ which was kept at $d = 256$ for the "ablation study" is now kept parametrizable.
-In fact, for this thesis, different latent dimensions are explored: $d \in {256, 512, 1024, 2048}$.
+In fact, for this thesis, different latent dimensions are explored: $d \in \{ 256, 512, 1024, 2048 \}$.
 The number of parameters of the model in dependence of $d$ are \dots.
 
 The models are trained on both the TNO 2015 and 2018 data for $100$ epochs.
@@ -161,7 +161,7 @@ For this, the three for the case studies chosen cities are used.
 
 During fine-tuning, the weights of the original models are updated.
 The learning rate is reduced.
-In our case, we chose $1e-x$ as learning rate.
+In our case, we chose $10^{-x}$ as learning rate.
 
 For fine-tuning, the TNO 2015 data is used.
 Later, for evaluation the TNO 2018 is used.

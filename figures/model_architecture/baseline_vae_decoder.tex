@@ -1,6 +1,7 @@
 \documentclass[border=15pt, multi, tikz]{standalone}
 %\usepackage{blocks}
 \usepackage{import}
+\usepackage{adjustbox}
 \subimport{layers/}{init}
 \usetikzlibrary{positioning}
 
@@ -11,6 +12,7 @@
 
 \begin{document}
 \begin{tikzpicture}
+\trimbox{1cm 0cm 0cm 0cm}{ 
 \tikzstyle{connection}=[ultra thick,every node/.style={sloped,allow upside down},draw=\edgecolor,opacity=0.7]
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% Draw Layer Blocks
@@ -90,7 +92,7 @@
     
     (a)--(b)--(c)--(d)
 ;
-
+}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \end{tikzpicture}
 \end{document}
