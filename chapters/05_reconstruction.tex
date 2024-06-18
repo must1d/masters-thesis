@@ -58,15 +58,32 @@ $x_{s_i}$ is the emission field for a single sector.
 
 \subsection{Generative Model Solver}
 Let $D: R^d \rightarrow R^{32 \times 32 \times 15}$ be the decoder of the variational autoencoder.
-Then, the generator $G: R^d \rightarrow R^{15000}$ can be written as $G(z) = \text{vec}(D(z))$, i.e. the generator G is the vectorization of the decoder of the VAE.
+Then, the generator $G: R^d \rightarrow R^{15360}$ can be written as $G(z) = \text{vec}(D(z))$, i.e. the generator G is the vectorization of the decoder of the VAE.
 
 The minimization problem
 \begin{equation}
-    z^* = \arg\min_{z}{\norm{A G(z) - y} + R(z)}
+    z^* = \arg\min_{z}{\left( \norm{A G(z) - y}_2^2 + \alpha R(z) \right)}
 \end{equation}
-with regularization term $R(z) = \norm{z}$ is solved numerically using the Adam Optimizer \parencite{Adam}.
-For the learning rate, values are chosen based on the number of measurements, as seen in table (make table).
-These values are determined empirically.
+with regularization term $R(z) = \norm{z}_2^2$ is solved numerically using the Adam Optimizer \parencite{Adam}.
+% For the learning rate $\alpha$, values are chosen based on the number of measurements $m$ as the sensing matrix increases in dimensions.
+% With an increase in dimensions of the sensing matrix, the gradients also scale.
+% The learning rates can be seen in Table \ref{table:1}.
+% \begin{table}[h!]
+%     \centering
+%     \begin{tabular}{|c|c c c c c c c c c|}
+%         \hline
+%         $m$ & $50$ & $100$ & $250$ & $500$ & $1000$ & $2500$ & $5000$ & $10000$ & $12500$ \\
+%         \hline
+%         $\alpha$ & $1.5 * 10^{-4}$ & $5 * 10^{-4}$ & $10^{-3}$ & $1.8 * 10^{-3}$ & $2.5 * 10^{-3}$ & $4 * 10^{-3}$ & $5.5 * 10^{-3}$ & $7 * 10^{-3}$ & $1.5 * 10^{-2}$ \\
+%         \hline
+%     \end{tabular}
+%     \caption{Learning Rate $\alpha$ Based on Number of Measurements $m$}
+%     \label{table:1}
+% \end{table}
+% These values are determined empirically.
+For the problems in this thesis, no regularization, i.e. $\alpha = 0$ showed the best results.
+Thus, no regularization is used for this solver.
+With $z^*$ determined, the generative model solver returns as $D(z^*)$ as its reconstruction.
 
 \subsection{LASSO}
 To assess the capabilities of the generative model against other approaches, the sparse reconstruction algorithm using the LASSO objective is used.
