@@ -92,6 +92,11 @@ First, random cropping is used.
 Furthermore, a random horizontal flip and vertical flip are applied with probability $0.5$ each.
 Lastly, emission fields are randomly rotated by 90$\circ$ with probability of $0.5$.
 This results in $8$ different transformations, with one of them being the original emission field.
+\begin{figure}[h!]
+    \centering
+    \includegraphics[width=\textwidth]{figures/03_dataset/nürnberg_city_plot.png}
+    \caption{Example Training Sample}
+\end{figure}
 
 The validation and test emission fields are not transformed, except for a center crop to the expected dimensions.
 

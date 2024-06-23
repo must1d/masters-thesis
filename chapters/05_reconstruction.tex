@@ -4,16 +4,27 @@
 \chapter{Compressed Sensing}\label{chapter:compressed_sensing}
 
 \section{Inverse Problems}
-In order to evaluate the generative capbailities in the context of inverse problems, a compressed sensing problems are used for evaluation.
+To evaluate the generative capbailities in the context of inverse problems, compressed sensing problems are used for evaluation.
+The compressed sensing problem is defined using a sensing matrix $A \in R^{m \times 15360}$.
+The forward model is then defined as
+\begin{equation}
+    y = A x + \epsilon
+\end{equation}
+The signal $x \in R^{15360}$ is derived from an emission inventory $\hat{x} \in R^{32 \times 32 \times 15}$ that is vectorized, i.e. $x = \text{vec}(\hat{x})$.
+The Gaussian noise $\epsilon \in R^m$ is sampled from a zero mean Gaussian distribution $N(0, \sigma)$.
+The standard deviation of $\sigma \in R$ depends on a paramtrizable signal to noise ratio SNR and the signal power $SP = \frac{1}{m}\sum_{i=1}^m{\left(Ax\right)_i}$ of the measurements.
+\begin{equation}
+    \sigma = \sqrt{\frac{SP}{SNR}}
+\end{equation}
+
+The sensing matrix $A$
 
 
 \subsection{Gaussian Measurements}
 This compressed sensing problem is based on the paper by Bora et al. as they mention that the performance of generative models can be assesed based on their provided problem statement.
 For this, a identically independent distributed matrix $A \in R^{m \times 15000}$ is sampled for each run.
 The following inverse problem is then solved using the minimization problem proposed by Bora et al \parencite{CSUsingAI}.
-\begin{equation}
-    y = A x + \epsilon
-\end{equation}
+
 with $x$ being the emission fields $x^*$ in vectorized form.
 This inverse problem is equivalnt to taking taking $m$ measurements that is randomly linearly affected by any sector in any cell within the emission field grid.
 While this does not correspond to a typical transport model which follows the law of physics, this problem serves as a good proxy for evaluating the generative capbailities in the context of inverse problems of the trained VAE. 

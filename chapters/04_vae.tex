@@ -159,6 +159,11 @@ The idea is that a generative model can learn the structure of the city and focu
 Thus, fine-tuning is evaluated in this thesis.
 For this, the three for the case studies chosen cities are used.
 
+The idea of fine-tuning the model to specific cities is to move the range $R(G)$ of the generator $G$, i.e. the space of all emission fields generateable by the decoder of the VAE.
+For instance, if a model cannot represent an emission field that is to be sensed, it is not able to reconstruct the emission field due to a high representational error.
+By fine-tuning the model, the range of the generator is modified such that the emission field to be sensed may either be closer to the range of the generator or even in it.
+This is depicted in Figure (make figure here to show the idea).
+
 During fine-tuning, the weights of the original models are updated.
 The learning rate is reduced.
 In our case, we chose $10^{-x}$ as learning rate.
