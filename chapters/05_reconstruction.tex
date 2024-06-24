@@ -58,12 +58,29 @@ In his paper, Benji reconstructed the emission field without considering the ind
 In this thesis, a full reconstruction is attempted, i.e. all $15$ sectors are reconstructed.
 Therefore, the sensing matrix based on the Gaussian plume model must be adapted accordingly.
 
-The forward model is the following:
+Consider measurement in the spatial domain, i.e. in the $32$ by $32$ grid.
+A measurement would then be affected by the sum of all emitters of each sector.
+We denote $x_S = x_A + x_B + \dots x_Y$, where $x_i$ corresponds to the emissions of sector $i \in \{A, B, \dots, Y\}$, as the sum of all sectors.
+Then, the forward sensing model has the following form.
 \begin{equation}
-    y = [A, \dots, A] [x_{s_0}, \dots, x_{s_{14}}]^T
+    y = A_S x_S + \epsilon
 \end{equation}
-$A$ is the Gaussian plume model for n measurements.
-$x_{s_i}$ is the emission field for a single sector.
+This can be formulated as follows:
+\begin{align}
+    y &= A_S (x_A + x_B + \dots + x_Y) + \epsilon \\
+    y &= A_S x_A + A_S x_B + \dots + A_S x_Y + \epsilon \\
+\end{align}
+Rewriting this as a matrix multiplication yields the following
+\begin{equation}
+    y = \begin{bmatrix} A_S & A_S & \cdots & A_S \end{bmatrix}\begin{bmatrix} x_A \\ x_B \\ \vdots \\x_Y \end{bmatrix} + \epsilon
+\end{equation}
+This can now be reforumalated to the following sensing problem:
+\begin{equation}
+    y = Ax + \epsilon
+\end{equation}
+with $A = \begin{bmatrix} A_S & A_S & \cdots & A_S \end{bmatrix}$.
+Stacking each sector $x_i$ yields the vectorized emission inventory.
+It can thus be concluded that for sector-wise reconstruction, the sensing matrix $A = \begin{bmatrix} A_S & A_S & \cdots & A_S \end{bmatrix}$ can be used.
 
 \section{Inverse Problem Solvers}
 
