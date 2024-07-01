@@ -113,15 +113,15 @@ For the problems in this thesis, no regularization, i.e. $\alpha = 0$ showed the
 Thus, no regularization is used for this solver.
 With $z^*$ determined, the generative model solver returns as $D(z^*)$ as its reconstruction.
 
-\subsection{LASSO}
-To assess the capabilities of the generative model against other approaches, the sparse reconstruction algorithm using the LASSO objective is used.
+\subsection{Lasso}
+To assess the capabilities of the generative model against other approaches, the sparse reconstruction algorithm using the Lasso regularization \parencite{Lasso} is used.
 \begin{equation}
-    LASSO = 
+    Lasso = 
 \end{equation}
 Scaling factor $\alpha$ is chosen as $0.1$, like in Bora et als paper.
-In addition to the LASSO in the original basis, the problems is transformed into two further bases.
+In addition to the Lasso in the original basis, the problems is transformed into two further bases.
 The first transform used for this is the discrete cosine transform.
 The cosine coefficients are computed
 The second transform is the discrete wavelet transform.
 Wavelet coefficients are computed using \parencite{PyWavelets}.
-Transformations are applied per sector.
+Transformations are applied individually per sector.
