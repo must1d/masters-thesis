@@ -3,7 +3,7 @@
 
 \chapter{Related Work}\label{chapter:related_work}
 
-\section{Emissions}
+\section{Emission Inventories}
 Emission inventories are a estimation of emission fields
 Questions:
 \begin{enumerate}
@@ -53,6 +53,13 @@ They mention Bora et al \parencite{CSUsingAI}.
 Their approach has the limitation that the reconstruction is constrained to the range of the generator.
 This, however, can improved by also taking into account other things: \parencite{SparseCSUsingAI}.
 
+Make a diagram of how the generative models are used.
+\begin{figure}[h!]
+    \centering
+    \includegraphics[width=\textwidth]{figures/02_related_work/bora_et_al.png}
+    \caption{Bora et al Paper}
+\end{figure}
+
 \section{Generative Models}
 There are three main kinds of modern successful generative models in the context of sample generation.
 These models are not limited to image generation only.
@@ -66,6 +73,14 @@ While GANs show higher quality generation for many different domains, GANs are d
 Therefore, for this thesis, VAE is chosen as the appropriate type of generative model
 
 \section{Contributions}
+The point of this work is not to investigate whether compressed sensing theory can be applied in the context of 
+This has been investigated by prior work, like Benjis.
+The point of this thesis is to investigate whether generative models can be applied.
+
+Is the model able to generalize beyond the trianing data?
+Is the model able to reconstruct emitters that are not covered in the emission inventories? 
+What is a good dimension for the lower dimensional space?
+
 Mention the rough constributions of this work:
 \begin{enumerate}
     \item trained VAE for emission inventories of European cities
