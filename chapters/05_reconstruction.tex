@@ -60,19 +60,19 @@ Therefore, the sensing matrix based on the Gaussian plume model must be adapted 
 
 Consider measurement in the spatial domain, i.e. in the $32$ by $32$ grid.
 A measurement would then be affected by the sum of all emitters of each sector.
-We denote $x_S = x_A + x_B + \dots x_Y$, where $x_i$ corresponds to the emissions of sector $i \in \{A, B, \dots, Y\}$, as the sum of all sectors.
+We denote $x_S = x_A + x_B + \dots x_L$, where $x_i$ corresponds to the emissions of sector $i \in \{A, B, \dots, L\}$, as the sum of all sectors.
 Then, the forward sensing model has the following form.
 \begin{equation}
     y = A_S x_S + \epsilon
 \end{equation}
 This can be formulated as follows:
 \begin{align}
-    y &= A_S (x_A + x_B + \dots + x_Y) + \epsilon \\
-    y &= A_S x_A + A_S x_B + \dots + A_S x_Y + \epsilon \\
+    y &= A_S (x_A + x_B + \dots + x_L) + \epsilon \\
+    y &= A_S x_A + A_S x_B + \dots + A_S x_L + \epsilon \\
 \end{align}
 Rewriting this as a matrix multiplication yields the following
 \begin{equation}
-    y = \begin{bmatrix} A_S & A_S & \cdots & A_S \end{bmatrix}\begin{bmatrix} x_A \\ x_B \\ \vdots \\x_Y \end{bmatrix} + \epsilon
+    y = \begin{bmatrix} A_S & A_S & \cdots & A_S \end{bmatrix}\begin{bmatrix} x_A \\ x_B \\ \vdots \\x_L \end{bmatrix} + \epsilon
 \end{equation}
 This can now be reforumalated to the following sensing problem:
 \begin{equation}
@@ -109,8 +109,7 @@ with regularization term $R(z) = \norm{z}_2^2$ is solved numerically using the A
 %     \label{table:1}
 % \end{table}
 % These values are determined empirically.
-For the problems in this thesis, no regularization, i.e. $\alpha = 0$ showed the best results.
-Thus, no regularization is used for this solver.
+For the problems in this thesis, $\alpha = 0.1$ showed the best results and is thus used for subsequent experiments.
 With $z^*$ determined, the generative model solver returns as $D(z^*)$ as its reconstruction.
 
 \subsection{Lasso}

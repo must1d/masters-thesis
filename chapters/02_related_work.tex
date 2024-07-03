@@ -3,10 +3,13 @@
 
 \chapter{Related Work}\label{chapter:related_work}
 
-\section{Emission Inventories}
+\section{Emissions}
+Emission inventories are a estimation of emission fields
 Questions:
 \begin{enumerate}
+    \item what are the purpose of emission inventories
     \item what are Emission Inventories
+    \item How are Emission Inventories generated
     \item what are the problems with bottom-up approaches for GHG emissions? 
     \subitem may miss
     \item what are typical approaches to top-down?
@@ -15,13 +18,35 @@ Questions:
 Then go over to Benjis work who has shown that 
 For this work, same assumptions as in Benjis work hold, i.e. background GHG emissions are ignored.
 
+\section{Inverse Problems in GHG Emission Context}
+How do top down approaches work?
+What is the inverse problem?
+Benji deonstrated use of compressed sensing.
+Formulate the problem formulation for this thesis here.
+Meaning, what are the constraints.
+Background GHG emissions.
+Assume linear forward model.
+
 \section{Compressed Sensing}
+Here, I should explain the general theory of compressed sensing.
+When does compressed sensing work well?
+
+For compressed sensing, signals must be sparse in some basis.
+This can be done with overcomplete dictionaries, transforms, etc.
+Common way is wavelet transform or discrete cosine transform.
+
+Recent developments make use of generative models for low dimensional representations which can be interpreted as sparse maps.
+This samples can be generated and thus represented with only few dimensions.
+
 There are three main approaches to alleviate sparsity constraint.
 1) transforms, such as Wavelet
 2) only searching for unknown emissions and take esimtations as basis
 3) Deep learning based approaches
 
-\section{Deep Learning for Inverse Problems}
+\section{Generative Models for Compressed Sensing}
+Here I want to give an overview of generative models can be used for compressed sensing.
+I should use the review as reference and give a short summary.
+
 The field of medical imaging has made advancements in the inverse problems using deep learning.
 A review of different deep learning approaches for CS is given in \parencite{ReviewCSUsingAI}
 They mention Bora et al \parencite{CSUsingAI}.
@@ -29,5 +54,20 @@ Their approach has the limitation that the reconstruction is constrained to the 
 This, however, can improved by also taking into account other things: \parencite{SparseCSUsingAI}.
 
 \section{Generative Models}
+There are three main kinds of modern successful generative models in the context of sample generation.
+These models are not limited to image generation only.
+There are variational autoencoders, generative adverserial networks, and score based models.
+Both VAEs and GANs generate samples from lower dimensionional noise.
+Score based models generate samples by denoising previous samples, starting from noise.
+The noise and generated samples thus have same dimensions for score based models.
+Due to this, score based models are not directly applicable with the method from \parencite{CSUsingAI}.
+However, alternative approaches for score based models exist, which are not explored here.
+While GANs show higher quality generation for many different domains, GANs are difficult to train as the objectives can get very unstable.
+Therefore, for this thesis, VAE is chosen as the appropriate type of generative model
 
 \section{Contributions}
+Mention the rough constributions of this work:
+\begin{enumerate}
+    \item trained VAE for emission inventories of European cities
+    \item demonstrated the applicability of generative models in the context of inverse models for top-down approaches
+\end{enumerate}
