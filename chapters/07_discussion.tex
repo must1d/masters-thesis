@@ -3,5 +3,20 @@
 
 \chapter{Discussion}\label{chapter:discussion}
 
-\section{Section}
+\section{Model}
+The model is far from ideal.
+By using MCMC, it was obvious that the latent variable could not be modeled as Gaussian.
+By investigating the latent variable z it is obvious that the latent space does not follow a perfect Gaussian distribution.
+We suspect that this has to do with the lack of distinct training samples.
+Time sclaing does not fundamentally change the training sample.
+Thus, fundamentally only n cities are contained in the training data.
+We suspect that by gathering more training data, the model is able to capture the shape of the city emissions better.
+Then, one could try to use algorithms such as MCMC.
 
+This is also supported by the fact that a regularization factor of 0 works the best.
+
+\section{Future Applciation}
+This thesis presents the idea of using machine learning based solving of inverse problems with a technique from 2017.
+The field of ML based inverse problems has made significant progress in the last year with research progress in generative AI.
+This thesis only shows that such techniques are applicable to the problem of reconstructing emitters from measurements.
+Thus, thie thesis opens the gates to exploring more of these approaches and apply state of the art techniques.

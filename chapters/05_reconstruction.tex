@@ -28,6 +28,8 @@ The following inverse problem is then solved using the minimization problem prop
 with $x$ being the emission fields $x^*$ in vectorized form.
 This inverse problem is equivalnt to taking taking $m$ measurements that is randomly linearly affected by any sector in any cell within the emission field grid.
 While this does not correspond to a typical transport model which follows the law of physics, this problem serves as a good proxy for evaluating the generative capbailities in the context of inverse problems of the trained VAE. 
+The randomly sampled sensing matrix fulfills the ... properties and thus allows comparision of solvers in ideal scenarios.
+This allows assessing the the potential of solvers independent of outside variables.
 
 The evaluation is performed on scaled emission fields.
 

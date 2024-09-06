@@ -5,6 +5,8 @@
 
 \section{Emission Inventories}
 Emission inventories are a estimation of emission fields
+They serve two main purposes \parencite{CAMS-REG-v4}.
+The first purpose is to 
 Questions:
 \begin{enumerate}
     \item what are the purpose of emission inventories
@@ -18,6 +20,14 @@ Questions:
 Then go over to Benjis work who has shown that 
 For this work, same assumptions as in Benjis work hold, i.e. background GHG emissions are ignored.
 
+Bottom-up approaches estimate emission fluxes by multiplying emission sources with their activity \parencite{BU-vs-TD} (also cite inventories).
+In contrast, top-down approaches start from measurements of GHG conecntrations and invert the transport of molecules to find the sources from which they emitted.
+One example for a measurement network is MUCCnet \parencite{MUCCnet}.
+Bottom-up approaches can miss emitters due to unknown datas whereas top-down approaches can be able to capture unknown emitters with measurements.
+Furthermore, 
+Bottom-up and top-down approaches show gaps in their esimtations which can largely be explained by temporal variability \parencite{BU-vs-TD}.
+
+
 \section{Inverse Problems in GHG Emission Context}
 How do top down approaches work?
 What is the inverse problem?
@@ -29,7 +39,37 @@ Assume linear forward model.
 
 \section{Compressed Sensing}
 Here, I should explain the general theory of compressed sensing.
-When does compressed sensing work well?
+Compressed sensing makes assumptions about the signal and forward model.
+Generally, signals are assumed to be sparse in some basis.
+If the forward model then fulfills certain criteria, reconstruction can be gurantueed.
+Sparsity can be 
+
+[Citations mssing]
+The most basic algorithm to reconstruct a signal would be minimize the L0 norm of a signal.
+The L0 norm is defined as the number of all non-zeros elements of a vector.
+\begin{equation}
+    min L0 of  s.t. y = Ax
+\end{equation}
+This problem is NP-hard and thus not practical in real world applications.
+Instead, it can be shown that minimizing the L1 norm yields the same result as above under certain conditions.
+\begin{equation}
+    \min()
+\end{equation}
+This algorithm is known as basis pursuit (BP).
+
+Basis pursuit is a very powerful algorithm, but assumes that measurements are ideal, i.e. not noisy.
+Extensions of this algorithm exist that deal with noise.
+This extension is called basis pursuit denoising (BPDN)
+\begin{equation}
+    \min()
+\end{equation}
+BPDN thus assumes that the noise level is known.
+
+Furthermore, regularization teqhniues exist to also sovle comrpessed sensing problems, for instance the Lasso regularizer which assumes a Laplacian prior.
+\begin{equation}
+    Lasso
+\end{equation}
+It can be shown that BPDN is equivalent to the Lasso regularizer for a certain alpha.
 
 For compressed sensing, signals must be sparse in some basis.
 This can be done with overcomplete dictionaries, transforms, etc.
@@ -42,6 +82,7 @@ There are three main approaches to alleviate sparsity constraint.
 1) transforms, such as Wavelet
 2) only searching for unknown emissions and take esimtations as basis
 3) Deep learning based approaches
+
 
 \section{Generative Models for Compressed Sensing}
 Here I want to give an overview of generative models can be used for compressed sensing.
@@ -59,6 +100,13 @@ Make a diagram of how the generative models are used.
     \includegraphics[width=\textwidth]{figures/02_related_work/bora_et_al.png}
     \caption{Bora et al Paper}
 \end{figure}
+
+Assuming a linear forward model $y = Ax + \epsilon$ with $A \in \mathbb{R}^{m \times n}$
+Given is a generator $G: \mathbb{R}^d \to \mathbb{R}^n$ and the compressed sensing problem.
+Solve the following minimization problem:
+\begin{equation}
+    z^* = \arg\min_{z}{\left( \norm{A G(z) - y}_2^2 + \alpha R(z) \right)}
+\end{equation}
 
 \section{Generative Models}
 There are three main kinds of modern successful generative models in the context of sample generation.
