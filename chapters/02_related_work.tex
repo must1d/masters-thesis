@@ -107,6 +107,10 @@ Solve the following minimization problem:
 \begin{equation}
     z^* = \arg\min_{z}{\left( \norm{A G(z) - y}_2^2 + \alpha R(z) \right)}
 \end{equation}
+An improvements is made by to further consider sparse deviations from the generated emission fields:
+\begin{equation}
+    z^* = \arg\min_{z, s}{\left(\norm{s}_1 + \lambda \norm{A \left( G(z) + s \right) - y}_2^2 \right)}
+\end{equation}
 
 \section{Generative Models}
 There are three main kinds of modern successful generative models in the context of sample generation.

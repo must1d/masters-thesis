@@ -17,9 +17,6 @@ The standard deviation of $\sigma \in R$ depends on a paramtrizable signal to no
     \sigma = \sqrt{\frac{SP}{SNR}}
 \end{equation}
 
-The sensing matrix $A$
-
-
 \subsection{Gaussian Measurements}
 This compressed sensing problem is based on the paper by Bora et al. as they mention that the performance of generative models can be assesed based on their provided problem statement.
 For this, a identically independent distributed matrix $A \in R^{m \times 15000}$ is sampled for each run.
@@ -53,9 +50,30 @@ The evaluation is run 5 times to reduce randomness resulting from random initial
 \subsection{Gaussian Plume Model}
 Gaussian sensing matrix do not represent the real the emission problem well.
 Instead of randomly samples sensing matrices, transport models should be used that indicate the sensitivity of measurements with resepect to physical grid cells based on the transport of molecules in the past.
-These transport models are computationally expensive to compute and in generel difficult to estimate on a per city basis.
+These transport models are computationally expensive and in generel difficult to estimate on a per city basis.
 Thus, we apply the same idea as Benji in his work.
 We substitue typical transport models, such as STILT, with a Gaussian plume model.
+We want to apply the model to reconstruct total emissions from area sources, i.e. 32 by 32.
+The generative models are trained to reconstruct sector-wise.
+Thus, we can reconstruct the decomposition into sectors and the sum each sector to achieve reconstruction of total emissions.
+This is a more challenging task for the generative model.
+If it were directly trained on generating 32 by 32 fields, the results would be much better.
+
+Furthermore, we consider the case of make measurements from the field containing point sources.
+Measurements are thus computed as follows:
+\begin{equation}
+    y &= A x + \epsilon
+\end{equation}
+The emissions can now be decomposed into area and point source fields.
+\begin{align}
+    y &= A (x_A + x_P) + \epsilon \\
+    y &= A x_A + A x_P + \epsilon \\
+    y - A x_P &= A x_A + \epsilon \\
+    \tilde{y} &= A x_A + \epsilon \\
+\end{align}
+
+\subsection{Gaussian Plume Model 2}
+
 In his paper, Benji reconstructed the emission field without considering the indivudal sectors as contributors.
 In this thesis, a full reconstruction is attempted, i.e. all $15$ sectors are reconstructed.
 Therefore, the sensing matrix based on the Gaussian plume model must be adapted accordingly.
