@@ -112,11 +112,12 @@ Assuming a linear forward model $y = Ax + \epsilon$ with $A \in \mathbb{R}^{m \t
 Given is a generator $G: \mathbb{R}^d \to \mathbb{R}^n$ and the compressed sensing problem.
 Solve the following minimization problem:
 \begin{equation}
-    z^* = \arg\min_{z}{\left( \norm{A G(z) - y}_2^2 + \alpha R(z) \right)}
+    z^* = \arg\min_{z}{\left( \norm{A G(z) - y}_2^2 + \gls{gamma} R(z) \right)}
 \end{equation}
 An improvements is made by to further consider sparse deviations from the generated emission fields:
+This equation is not quite right as it outsputs 2...
 \begin{equation}
-    z^* = \arg\min_{z, s}{\left(\norm{s}_1 + \lambda \norm{A \left( G(z) + s \right) - y}_2^2 \right)}
+    z^* = \arg\min_{z, s}{\left(\norm{s}_1 + \gls{lambda} \norm{A \left( G(z) + s \right) - y}_2^2 \right)}
 \end{equation}
 
 \section{Generative Models}
