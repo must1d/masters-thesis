@@ -171,6 +171,7 @@ In our case, we chose $10^{-x}$ as learning rate.
 For fine-tuning, the TNO 2015 data is used.
 Later, for evaluation the TNO 2018 is used.
 
-To prevent the model from overfitting to the 2015 data and train the model to generalize to unknown emitters, i.e. during the bottom up estimations, the following things are done \dots.
-
+The cities are cropped in the center.
+Furthermore, random scaling factors $s \in \U(0.5, 1.5)$ are applied to simulate uncertainties in emission inventories.
+Additionally, gaussian noise is added to the city emission field.
 
