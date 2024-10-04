@@ -45,5 +45,35 @@ To fill.
 Make a plot that has x axis snr and y axis relative error just like in Benjis plot.
 Do this for the 3 cities.
 
+Example Munich for low noise, i.e. 40db SNR.
+\begin{figure}
+    \centering
+    \begin{subfigure}[b]{0.32\textwidth}
+        \includegraphics[width=\textwidth]{figures/06_results/gaussian_plume_example/munich/target.eps}
+        \caption{Target Munich}
+    \end{subfigure}
+    \begin{subfigure}[b]{0.32\textwidth}
+        \includegraphics[width=\textwidth]{figures/06_results/gaussian_plume_example/munich/gen_2048_fine_tuned_40_db.eps}
+        \caption{Gen 2048 Fine-tuned}
+    \end{subfigure}
+    \begin{subfigure}[b]{0.32\textwidth}
+        \includegraphics[width=\textwidth]{figures/06_results/gaussian_plume_example/munich/gen_2048_40_db.eps}
+        \caption{Gen 2048}
+    \end{subfigure}
+    \begin{subfigure}[b]{0.32\textwidth}
+        \includegraphics[width=\textwidth]{figures/06_results/gaussian_plume_example/munich/bp_dct_snr_40_db.eps}
+        \caption{DCT}
+    \end{subfigure}    
+    \begin{subfigure}[b]{0.32\textwidth}
+        \includegraphics[width=\textwidth]{figures/06_results/gaussian_plume_example/munich/bp_dwt_snr_40_db.eps}
+        \caption{DWT}
+    \end{subfigure}
+    \begin{subfigure}[b]{0.32\textwidth}
+        \includegraphics[width=\textwidth]{figures/06_results/gaussian_plume_example/munich/least_squares_snr_40_db.eps}
+        \caption{LS}
+    \end{subfigure}
+    \caption{Target Munich}
+\end{figure}
+
 \section{Composition Into Sectors}
 
