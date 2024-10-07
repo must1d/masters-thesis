@@ -104,6 +104,19 @@ It can thus be concluded that for sector-wise reconstruction, the sensing matrix
 
 \section{Inverse Problem Solvers}
 
+\subsection{Lasso}
+To assess the capabilities of the generative model against other approaches, the sparse reconstruction algorithm using the Lasso regularization \parencite{Lasso} is used.
+\begin{equation}
+    Lasso = 
+\end{equation}
+Scaling factor $\alpha$ is chosen as $0.1$, like in Bora et als paper.
+In addition to the Lasso in the original basis, the problems is transformed into two further bases.
+The first transform used for this is the discrete cosine transform.
+The cosine coefficients are computed
+The second transform is the discrete wavelet transform.
+Wavelet coefficients are computed using \parencite{PyWavelets}.
+Transformations are applied individually per sector.
+
 \subsection{Generative Model Solver}
 Let $D: R^d \rightarrow R^{32 \times 32 \times 15}$ be the decoder of the variational autoencoder.
 Then, the generator $G: R^d \rightarrow R^{15360}$ can be written as $G(z) = \text{vec}(D(z))$, i.e. the generator G is the vectorization of the decoder of the VAE.
@@ -132,15 +145,6 @@ with regularization term $R(z) = \norm{z}_2^2$ is solved numerically using the A
 For the problems in this thesis, $\alpha = 0.1$ showed the best results and is thus used for subsequent experiments.
 With $z^*$ determined, the generative model solver returns as $D(z^*)$ as its reconstruction.
 
-\subsection{Lasso}
-To assess the capabilities of the generative model against other approaches, the sparse reconstruction algorithm using the Lasso regularization \parencite{Lasso} is used.
-\begin{equation}
-    Lasso = 
-\end{equation}
-Scaling factor $\alpha$ is chosen as $0.1$, like in Bora et als paper.
-In addition to the Lasso in the original basis, the problems is transformed into two further bases.
-The first transform used for this is the discrete cosine transform.
-The cosine coefficients are computed
-The second transform is the discrete wavelet transform.
-Wavelet coefficients are computed using \parencite{PyWavelets}.
-Transformations are applied individually per sector.
+\subsection{Sparse Generative Model Solver}
+The hyperparamater lambda is optimized by investigating the loss curve.
+It should be smooth and taper off slowly.
