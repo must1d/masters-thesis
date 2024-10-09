@@ -2,12 +2,13 @@
 % Add the above to each chapter to make compiling the PDF easier in some editors.
 
 \chapter{Results}\label{chapter:results}
+\section{Variational Auto Encoder Results}
 In this chapter, the following experiments are performed.
 For all experiments the test data is used.
 Then, an inverse problem is generated.
 This is run x times.
 
-\section{Latent Dimension}
+\subsection{Latent Dimension}
 The latent dimension of the VAE has an effect of the representational error.
 With an increase of the latent dimension, the VAE is able to represent more information.
 This means the range of the generator is bigger.
@@ -22,7 +23,7 @@ This results in the following [to fill].
 A smaller latent dimension will have a smaller error for few measurements
 A bigger latent dimension will have a smaller error for many measurements.
 
-\section{Fine-tuned Models vs Base Models}
+\subsection{Fine-tuned Models vs Base Models}
 \begin{figure}[h!]
     \centering
     \includegraphics[width=\textwidth]{figures/06_results/fine_tuned_zuerich.eps}
@@ -31,7 +32,7 @@ A bigger latent dimension will have a smaller error for many measurements.
 The other plots can be seen in the appendix.
 Overall, they follow the same trend.
 
-\section{Generative Models vs Lasso}
+\subsection{VAE vs Lasso}
 \begin{figure}[h!]
     \centering
     \includegraphics[width=\textwidth]{figures/06_results/gen_vs_lasso.eps}
@@ -40,6 +41,7 @@ Overall, they follow the same trend.
 Make a graph that keeps num measurements fixed and only varies the noise.
 
 \section{Atmospheric Inversion}
+\subsection{Example Run for Munich}
 The first run is an SNR plot.
 For this run, the artifical footprints from Benjis paper are taken.
 Jzst like in his paper, $3\%$ of unknowns measuement stations are used, i.e. 30.
@@ -87,6 +89,7 @@ For each SNR, 3 problems are created to get better sampling.
 Make a plot that has x axis snr and y axis relative error just like in Benjis plot.
 Do this for the 3 cities.
 
+\subsection{Over SNR}
 The second run is an example to qualitatively assess the performance.
 The situation is very favorable with a low to moderate SNR of 20dB.
 The chosen city is Munich.
@@ -121,10 +124,8 @@ This wind field covers ~180 degrees.
         \includegraphics[width=\textwidth]{figures/06_results/gaussian_plume_example/munich/least_squares_snr_20_db.eps}
         \caption{LS}
     \end{subfigure}
-    \caption{Target Munich}
+    \caption{Example Run for Munich}
 \end{figure}
 The results are reported in the following table.
 This also includes the other models that performed worse than the 2048 one.
-
-\section{Composition Into Sectors}
 

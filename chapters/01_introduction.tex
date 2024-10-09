@@ -26,13 +26,12 @@ Three reasons for bottom-up approach:
 	\item find emitters not captured by inventories
 \end{itemize}
 
-\subsection{Questions}
+\section{Research Questions}
 This thesis aims at answering some questions:
-\begin{itemize}
-	\item Can variational autoencoders learn a low dimensional representation of emission inventories that allows using them in the context of compressed sensing for emissions?
-	\item What is the dimension of that low dimensional representation?
-	\item How does the model compare to previous approaches? How does it perform for less or more number of measurements?
-	\item How does it perform for very high resolution emission fields, like 100m resolution?
-\end{itemize}
 
-Technical University Munich \gls{TUM} \Gls{TUM}
+\begin{itemize}
+	\item How well can a variaional autoencoder capture a low dimensional representation of area sources in emission inventories?
+	\item What is the effect of the dimension of that low dimensional space?
+	\item Is the variational autoencoder generazible to all urban emission fields or should it be specialized on one city?
+	\item How well does such a variational autoencoder perform in atmospheric inversion of area sources as a downstream task compared to state of the art approaches?
+\end{itemize}

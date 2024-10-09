@@ -47,7 +47,8 @@ A random measurement matrix $A$ is generated and each of the $3$ algorithms solv
 The temporal transforms are disabled during evaluation which means that for each city only one emission field per year is used.
 The evaluation is run 5 times to reduce randomness resulting from random initialization of $z$.
 
-\subsection{Gaussian Plume Model}
+\subsection{Atmospheric Inversion}
+
 Gaussian sensing matrix do not represent the real the emission problem well.
 Instead of randomly samples sensing matrices, transport models should be used that indicate the sensitivity of measurements with resepect to physical grid cells based on the transport of molecules in the past.
 These transport models are computationally expensive and in generel difficult to estimate on a per city basis.
@@ -72,39 +73,42 @@ The emissions can now be decomposed into area and point source fields.
     \tilde{y} &= A x_A + \epsilon
 \end{align}
 
-\subsection{Gaussian Plume Model 2}
+The SNR is defined with respect to $x_a$.
 
-In his paper, Benji reconstructed the emission field without considering the indivudal sectors as contributors.
-In this thesis, a full reconstruction is attempted, i.e. all $15$ sectors are reconstructed.
-Therefore, the sensing matrix based on the Gaussian plume model must be adapted accordingly.
+% \subsubsection{Composition Into Sectors}
 
-Consider measurement in the spatial domain, i.e. in the $32$ by $32$ grid.
-A measurement would then be affected by the sum of all emitters of each sector.
-We denote $x_S = x_A + x_B + \dots x_L$, where $x_i$ corresponds to the emissions of sector $i \in \{A, B, \dots, L\}$, as the sum of all sectors.
-Then, the forward sensing model has the following form.
-\begin{equation}
-    y = A_S x_S + \epsilon
-\end{equation}
-This can be formulated as follows:
-\begin{align}
-    y &= A_S (x_A + x_B + \dots + x_L) + \epsilon \\
-    y &= A_S x_A + A_S x_B + \dots + A_S x_L + \epsilon \\
-\end{align}
-Rewriting this as a matrix multiplication yields the following
-\begin{equation}
-    y = \begin{bmatrix} A_S & A_S & \cdots & A_S \end{bmatrix}\begin{bmatrix} x_A \\ x_B \\ \vdots \\x_L \end{bmatrix} + \epsilon
-\end{equation}
-This can now be reforumalated to the following sensing problem:
-\begin{equation}
-    y = Ax + \epsilon
-\end{equation}
-with $A = \begin{bmatrix} A_S & A_S & \cdots & A_S \end{bmatrix}$.
-Stacking each sector $x_i$ yields the vectorized emission inventory.
-It can thus be concluded that for sector-wise reconstruction, the sensing matrix $A = \begin{bmatrix} A_S & A_S & \cdots & A_S \end{bmatrix}$ can be used.
+% In his paper, Benji reconstructed the emission field without considering the indivudal sectors as contributors.
+% In this thesis, a full reconstruction is attempted, i.e. all $15$ sectors are reconstructed.
+% Therefore, the sensing matrix based on the Gaussian plume model must be adapted accordingly.
+
+% Consider measurement in the spatial domain, i.e. in the $32$ by $32$ grid.
+% A measurement would then be affected by the sum of all emitters of each sector.
+% We denote $x_S = x_A + x_B + \dots x_L$, where $x_i$ corresponds to the emissions of sector $i \in \{A, B, \dots, L\}$, as the sum of all sectors.
+% Then, the forward sensing model has the following form.
+% \begin{equation}
+%     y = A_S x_S + \epsilon
+% \end{equation}
+% This can be formulated as follows:
+% \begin{align}
+%     y &= A_S (x_A + x_B + \dots + x_L) + \epsilon \\
+%     y &= A_S x_A + A_S x_B + \dots + A_S x_L + \epsilon \\
+% \end{align}
+% Rewriting this as a matrix multiplication yields the following
+% \begin{equation}
+%     y = \begin{bmatrix} A_S & A_S & \cdots & A_S \end{bmatrix}\begin{bmatrix} x_A \\ x_B \\ \vdots \\x_L \end{bmatrix} + \epsilon
+% \end{equation}
+% This can now be reforumalated to the following sensing problem:
+% \begin{equation}
+%     y = Ax + \epsilon
+% \end{equation}
+% with $A = \begin{bmatrix} A_S & A_S & \cdots & A_S \end{bmatrix}$.
+% Stacking each sector $x_i$ yields the vectorized emission inventory.
+% It can thus be concluded that for sector-wise reconstruction, the sensing matrix $A = \begin{bmatrix} A_S & A_S & \cdots & A_S \end{bmatrix}$ can be used.
 
 \section{Inverse Problem Solvers}
 
-\subsection{Lasso}
+\subsection{Sparse Reconstruction}
+\subsubsection{Lasso}
 To assess the capabilities of the generative model against other approaches, the sparse reconstruction algorithm using the Lasso regularization \parencite{Lasso} is used.
 \begin{equation}
     Lasso = 
@@ -117,7 +121,12 @@ The second transform is the discrete wavelet transform.
 Wavelet coefficients are computed using \parencite{PyWavelets}.
 Transformations are applied individually per sector.
 
-\subsection{Generative Model Solver}
+\subsubsection{Basis Pursuit}
+
+\subsection{Least Squares}
+
+\subsection{Generative Models}
+\subsubsection{Generative Model Solver}
 Let $D: R^d \rightarrow R^{32 \times 32 \times 15}$ be the decoder of the variational autoencoder.
 Then, the generator $G: R^d \rightarrow R^{15360}$ can be written as $G(z) = \text{vec}(D(z))$, i.e. the generator G is the vectorization of the decoder of the VAE.
 
@@ -145,6 +154,6 @@ with regularization term $R(z) = \norm{z}_2^2$ is solved numerically using the A
 For the problems in this thesis, $\alpha = 0.1$ showed the best results and is thus used for subsequent experiments.
 With $z^*$ determined, the generative model solver returns as $D(z^*)$ as its reconstruction.
 
-\subsection{Sparse Generative Model Solver}
+\subsubsection{Sparse Generative Model Solver}
 The hyperparamater lambda is optimized by investigating the loss curve.
 It should be smooth and taper off slowly.
