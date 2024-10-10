@@ -68,7 +68,7 @@ A bigger latent dimension will have a smaller error for many measurements.
 Make a graph that keeps num measurements fixed and only varies the noise.
 
 \section{Atmospheric Inversion}
-\subsection{Example Run for Munich}
+\subsection{Over SNR}
 The first run is an SNR plot.
 For this run, the artifical footprints from Benjis paper are taken.
 Jzst like in his paper, $3\%$ of unknowns measuement stations are used, i.e. 30.
@@ -116,7 +116,7 @@ For each SNR, 3 problems are created to get better sampling.
 Make a plot that has x axis snr and y axis relative error just like in Benjis plot.
 Do this for the 3 cities.
 
-\subsection{Over SNR}
+\subsection{Example Munich}
 The second run is an example to qualitatively assess the performance.
 The situation is very favorable with a low to moderate SNR of 20dB.
 The chosen city is Munich.
@@ -129,23 +129,23 @@ This wind field covers ~180 degrees.
     \centering
     \begin{subfigure}[b]{0.32\textwidth}
         \includegraphics[width=\textwidth]{figures/06_results/gaussian_plume_example/munich/target.eps}
-        \caption{Target Munich}
+        \caption{Target Emissions}
     \end{subfigure}
     \begin{subfigure}[b]{0.32\textwidth}
         \includegraphics[width=\textwidth]{figures/06_results/gaussian_plume_example/munich/gen_2048_fine_tuned_20_db.eps}
-        \caption{Gen 2048 Fine-tuned}
+        \caption{VAE (2048) Fine-tuned}
     \end{subfigure}
     \begin{subfigure}[b]{0.32\textwidth}
         \includegraphics[width=\textwidth]{figures/06_results/gaussian_plume_example/munich/gen_2048_20_db.eps}
-        \caption{Gen 2048}
+        \caption{VAE (2048)}
     \end{subfigure}
     \begin{subfigure}[b]{0.32\textwidth}
         \includegraphics[width=\textwidth]{figures/06_results/gaussian_plume_example/munich/bp_dct_snr_20_db.eps}
-        \caption{DCT}
+        \caption{SR (DCT)}
     \end{subfigure}    
     \begin{subfigure}[b]{0.32\textwidth}
         \includegraphics[width=\textwidth]{figures/06_results/gaussian_plume_example/munich/bp_dwt_snr_20_db.eps}
-        \caption{DWT}
+        \caption{SR (DWT)}
     \end{subfigure}
     \begin{subfigure}[b]{0.32\textwidth}
         \includegraphics[width=\textwidth]{figures/06_results/gaussian_plume_example/munich/least_squares_snr_20_db.eps}
@@ -155,4 +155,30 @@ This wind field covers ~180 degrees.
 \end{figure}
 The results are reported in the following table.
 This also includes the other models that performed worse than the 2048 one.
-
+\begin{table}[h]
+    \centering
+    \begin{tabular}{|l|c|c|}
+        \hline
+        \textbf{Solver} & \textbf{Relative Error} & \textbf{SSIM} \\
+        \hline
+        \hline
+        VAE (256) & 54.880\% & 0.426 \\
+        VAE (512) & 50.999\% & 0.499 \\
+        VAE (1024) & 48.941\% & 0.493 \\
+        VAE (2048) & 46.139\% & 0.520 \\
+        \hline
+        VAE (256) Fine-tuned & 46.333\% & 0.585 \\
+        VAE (512) Fine-tuned & 35.974\% & 0.710 \\
+        VAE (1024) Fine-tuned & 37.609\% & 0.739 \\
+        \textbf{VAE (2048) Fine-tuned} & \textbf{32.833\%} & \textbf{0.751} \\
+        \hline
+        SR (DWT) & 51.102\% & 0.445 \\
+        SR (DCT) & 47.767\% & 0.514 \\
+        \hline
+        LS & 49.767\% & 0.449 \\
+        \hline
+    \end{tabular}
+    \caption{Relative Error and SSIM for Different Solvers}
+    \label{tab:solvers}
+\end{table}
+TODO: add sum of sensitivities for this example.
