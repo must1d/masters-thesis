@@ -17,15 +17,22 @@ However, with a bigger range, the search for a point becomes more difficult.
 This results in the following [to fill].
 \begin{figure}[h!]
     \centering
-    \includegraphics[width=\textwidth]{figures/06_results/latent_dimension.eps}
-    \caption{Latent Dimensions}
+    \begin{subfigure}[b]{0.49\textwidth}
+        \includegraphics[width=\textwidth]{figures/06_results/vae_benchmark/effect_of_latent_dimension/effect_of_latent_dimension_relative_error.eps}
+        \caption{Relative Error}
+    \end{subfigure}
+    \begin{subfigure}[b]{0.49\textwidth}
+        \includegraphics[width=\textwidth]{figures/06_results/vae_benchmark/effect_of_latent_dimension/effect_of_latent_dimension_ssim.eps}
+        \caption{SSIM}
+    \end{subfigure}
+    \caption{Effect of Latent Dimension}
 \end{figure}
 A smaller latent dimension will have a smaller error for few measurements
 A bigger latent dimension will have a smaller error for many measurements.
 
 \subsection{Fine-tuned Models vs Base Models}
 
-\begin{table}[h]
+\begin{table}[h!]
     \centering
     \begin{tabular}{|c|c|c|c|c|}
         \hline
@@ -62,8 +69,23 @@ A bigger latent dimension will have a smaller error for many measurements.
 \subsection{VAE vs Lasso}
 \begin{figure}[h!]
     \centering
-    \includegraphics[width=\textwidth]{figures/06_results/gen_vs_lasso.eps}
-    \caption{Generative Model vs Lasso}
+    \begin{subfigure}[b]{0.49\textwidth}
+        \includegraphics[width=\textwidth]{figures/06_results/vae_benchmark/vae_vs_lasso/vae_vs_lasso_relative_error.eps}
+        \caption{Relative Error}
+    \end{subfigure}
+    \begin{subfigure}[b]{0.49\textwidth}
+        \includegraphics[width=\textwidth]{figures/06_results/vae_benchmark/vae_vs_lasso/vae_vs_lasso_ssim.eps}
+        \caption{SSIM}
+    \end{subfigure}
+    \begin{subfigure}[b]{0.49\textwidth}
+        \includegraphics[width=\textwidth]{figures/06_results/vae_benchmark/vae_vs_lasso/vae_vs_lasso_relative_error_noisy.eps}
+        \caption{Relative Error (20dB SNR)}
+    \end{subfigure}
+    \begin{subfigure}[b]{0.49\textwidth}
+        \includegraphics[width=\textwidth]{figures/06_results/vae_benchmark/vae_vs_lasso/vae_vs_lasso_ssim_noisy.eps}
+        \caption{SSIM (20dB SNR)}
+    \end{subfigure}
+    \caption{VAE vs Lasso}
 \end{figure}
 Make a graph that keeps num measurements fixed and only varies the noise.
 
