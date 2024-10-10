@@ -2,7 +2,7 @@
 % Add the above to each chapter to make compiling the PDF easier in some editors.
 
 \chapter{Results}\label{chapter:results}
-\section{Variational Auto Encoder Results}
+\section{Variational Auto Encoder Benchmark}
 In this chapter, the following experiments are performed.
 For all experiments the test data is used.
 Then, an inverse problem is generated.
@@ -24,13 +24,40 @@ A smaller latent dimension will have a smaller error for few measurements
 A bigger latent dimension will have a smaller error for many measurements.
 
 \subsection{Fine-tuned Models vs Base Models}
-\begin{figure}[h!]
+
+\begin{table}[h]
     \centering
-    \includegraphics[width=\textwidth]{figures/06_results/fine_tuned_zuerich.eps}
-    \caption{Results for Fine-tuned Model Zurich}
-\end{figure}
-The other plots can be seen in the appendix.
-Overall, they follow the same trend.
+    \begin{tabular}{|c|c|c|c|c|}
+        \hline
+        \multirow{2}{*}{} & \multirow{2}*{\begin{tabular}{c}\textbf{Latent}\\\textbf{Dimension}\end{tabular}} & \multicolumn{3}{c|}{\textbf{City}} \\
+        \cline{3-5}
+        & & \textbf{Munich} & \textbf{Paris} & \textbf{Zurich} \\
+        \hline
+        \multirow{4}*{\begin{tabular}{c}\textbf{Relative Error}\\\textbf{Improvement}\end{tabular}}
+            & 256 & \textbf{+30.87\%} & \textbf{+29.83\%} & \textbf{+31.32\%} \\
+            & 512 & \textbf{+30.60\%} & \textbf{+31.59\%} & \textbf{+33.39\%} \\
+            & 1024 & \textbf{+24.55\%} & \textbf{+20.20\%} & \textbf{+25.73\%} \\
+            & 2048 & \textbf{+14.66\%} & \textbf{+14.54\%} & \textbf{+21.73\%} \\
+        \hline
+        \multirow{4}{*}{\begin{tabular}{c}\textbf{SSIM}\\\textbf{Improvement}\end{tabular}}
+            & 256 & \textbf{+0.02\%} & \textbf{+5.43\%} & -4.14\% \\
+            & 512 & -2.54\% & \textbf{+5.71\%} & -3.69\% \\
+            & 1024 & -1.67\% & \textbf{+4.03\%} & -4.61\% \\
+            & 2048 & -1.63\% & \textbf{+2.10\%} & -4.53\% \\
+        \hline
+    \end{tabular}
+    \caption{Relative Error and SSIM Improvements from Fine-tuning}
+    \label{tab:results}
+\end{table}
+
+
+% \begin{figure}[h!]
+%     \centering
+%     \includegraphics[width=\textwidth]{figures/06_results/fine_tuned_zuerich.eps}
+%     \caption{Results for Fine-tuned Model Zurich}
+% \end{figure}
+% The other plots can be seen in the appendix.
+% Overall, they follow the same trend.
 
 \subsection{VAE vs Lasso}
 \begin{figure}[h!]
