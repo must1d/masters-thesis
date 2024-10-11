@@ -155,6 +155,10 @@ For the problems in this thesis, $\alpha = 0.1$ showed the best results and is t
 With $z^*$ determined, the generative model solver returns as $D(z^*)$ as its reconstruction.
 The latent variable is initialized with a random $z ~ N(0, 1)$. 
 
+In the case of total emission reconstruction, the generator is redefined as the sum of sectors.
+This means that the output of the model is an actual decomposition into sectors.
+However, the output of the solver will be the sum of those sectors.
+
 \subsubsection{Sparse Generative Model Solver}
 Highlight warmup.
 How many steps etc..
