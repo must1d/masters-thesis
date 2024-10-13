@@ -22,10 +22,25 @@ However, the presented approaches can be directly applied for all types of GHG s
 \section{Urban Emission Fields}
 Urban environments differ from non-urban environments in terms of their emissions.
 For instance, urban environments often have a city center that generates a large portion of emissions as seen for example in Munich (Figure).
-\begin{figure}[h!]
+\begin{figure}
     \centering
-    \includegraphics[width=\textwidth]{figures/03_dataset/Munich_plot.png}
-    \caption{Munich Emissions}
+    \begin{subfigure}{0.32\textwidth}
+        \centering
+        \includegraphics[width=\linewidth]{figures/03_dataset/munich/munich_2015_total_emissions.eps}
+        \caption{Total Emissions}
+    \end{subfigure}
+    \begin{subfigure}{0.32\textwidth}
+        \centering
+        \includegraphics[width=\linewidth]{figures/03_dataset/munich/munich_2015_sector_c.eps}
+        \caption{Sector C}
+    \end{subfigure}
+    \begin{subfigure}{0.32\textwidth}
+        \centering
+        \includegraphics[width=\linewidth]{figures/03_dataset/munich/munich_2015_sector_f1.eps}
+        \caption{Sector F1}
+    \end{subfigure}
+    \caption{Munich Area Sources TNO 2015}
+    \label{fig:munich_emissions}
 \end{figure}
 Therefore, as the focus of this thesis are urban environments, they have to be filtered from the TNO datasets.
 For this, several cities are selected from a public database by OpenDatasoft \parencite{OpenDataSoft}.
@@ -94,8 +109,18 @@ Lastly, emission fields are randomly rotated by 90$\circ$ with probability of $0
 This results in $8$ different transformations, with one of them being the original emission field.
 \begin{figure}[h!]
     \centering
-    \includegraphics[width=\textwidth]{figures/03_dataset/nürnberg_city_plot.png}
-    \caption{Example Training Sample}
+    \begin{subfigure}{0.4\textwidth}
+        \centering
+        \includegraphics[width=\linewidth]{figures/03_dataset/nuernberg/nuernberg.eps}
+        \caption{Original}
+    \end{subfigure}
+    \begin{subfigure}{0.4\textwidth}
+        \centering
+        \includegraphics[width=\linewidth]{figures/03_dataset/nuernberg/nuernberg_transformed.eps}
+        \caption{Transformed}
+    \end{subfigure}
+    \caption{Nuremberg Area Sources As Training Samples (summed emissions)}
+    \label{fig:nuernberg_emissions}
 \end{figure}
 
 The validation and test emission fields are not transformed, except for a center crop to the expected dimensions.
