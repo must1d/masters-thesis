@@ -4,92 +4,183 @@
 \chapter{Related Work}\label{chapter:related_work}
 
 \section{Emission Inventories}
-Emission inventories are a estimation of emission fields
-They serve two main purposes \parencite{CAMS-REG-v4}.
-The first purpose is to 
-Questions:
-\begin{enumerate}
-    \item what are the purpose of emission inventories
-    \item what are Emission Inventories
-    \item How are Emission Inventories generated
-    \item what are the problems with bottom-up approaches for GHG emissions? 
-    \subitem may miss
-    \item what are typical approaches to top-down?
-    \item what are the challenges in top-down approaches?
-\end{enumerate}
-Then go over to Benjis work who has shown that 
-For this work, same assumptions as in Benjis work hold, i.e. background GHG emissions are ignored.
+Emission inventories are essential tools for monitoring anthropogenic GHG emissions.
+They provide spatially and temporally resolved estimates of emissions based on activity data (e.g., fuel consumption, industrial processes) and emission factors.
+Inventories like the CAMS (Copernicus Atmosphere Monitoring Service) and TNO datasets provide detailed emission fields across Europe with varying spatial resolutions [CAMS 2020; TNO 2020].
+These inventories are typically used for bottom-up estimates, where emissions are computed by aggregating activity data from individual sectors, such as transportation, residential heating, and industry.
 
-Bottom-up approaches estimate emission fluxes by multiplying emission sources with their activity \parencite{BU-vs-TD} (also cite inventories).
-In contrast, top-down approaches start from measurements of GHG conecntrations and invert the transport of molecules to find the sources from which they emitted.
-One example for a measurement network is MUCCnet \parencite{MUCCnet}.
-Bottom-up approaches can miss emitters due to unknown datas whereas top-down approaches can be able to capture unknown emitters with measurements.
-Furthermore, 
-Bottom-up and top-down approaches show gaps in their esimtations which can largely be explained by temporal variability \parencite{BU-vs-TD}.
+While emission inventories offer detailed estimates, they often suffer from inaccuracies due to incomplete data, outdated emission factors, and the exclusion of unknown or hidden emission sources.
+These limitations highlight the need for top-down approaches, where atmospheric measurements are used to infer emission sources, potentially identifying overlooked emitters [Bergamaschi et al., 2018].
+% Emission inventories are a estimation of emission fields
+% They serve two main purposes \parencite{CAMS-REG-v4}.
+% The first purpose is to 
+% Questions:
+% \begin{enumerate}
+%     \item what are the purpose of emission inventories
+%     \item what are Emission Inventories
+%     \item How are Emission Inventories generated
+%     \item what are the problems with bottom-up approaches for GHG emissions? 
+%     \subitem may miss
+%     \item what are typical approaches to top-down?
+%     \item what are the challenges in top-down approaches?
+% \end{enumerate}
+% Then go over to Benjis work who has shown that 
+% For this work, same assumptions as in Benjis work hold, i.e. background GHG emissions are ignored.
 
+% Bottom-up approaches estimate emission fluxes by multiplying emission sources with their activity \parencite{BU-vs-TD} (also cite inventories).
+% In contrast, top-down approaches start from measurements of GHG conecntrations and invert the transport of molecules to find the sources from which they emitted.
+% One example for a measurement network is MUCCnet \parencite{MUCCnet}.
+% Bottom-up approaches can miss emitters due to unknown datas whereas top-down approaches can be able to capture unknown emitters with measurements.
+% Furthermore, 
+% Bottom-up and top-down approaches show gaps in their esimtations which can largely be explained by temporal variability \parencite{BU-vs-TD}.
+
+% There are essentially two approaches to estimating emissions.
+% The first approach starts from the and is called bottom-up approach.
+% The second approach starts from measurements and aims at inverting the atmospheric transport of molecules to determine the sources.
+
+% \begin{enumerate}
+%     \item 
+% \end{enumerate}
 
 \section{Inverse Problems in GHG Emission Context}
-How do top down approaches work?
-What is the inverse problem?
-Benji deonstrated use of compressed sensing.
-Formulate the problem formulation for this thesis here.
-Meaning, what are the constraints.
-Background GHG emissions.
-Assume linear forward model.
+Top-down approaches formulate the emission estimation problem as an inverse problem, where GHG concentrations measured at ground-based or satellite stations are used to infer the underlying emission fields.
+Add example for MUCCnet here.
+The relationship between measured concentrations and emissions can be expressed as $y= A x + \epsilon$, where $y$ represents the measured concentrations, $A$ is the transport matrix (e.g., a Gaussian plume or atmospheric transport model), and xx is the emission field.
+Solving this inverse problem allows the reconstruction of emission fields based on the observed data.
 
-This inverse problem can be solved using Bayesian inversion.
-Mention l2 norm reconstruction.
+Bayesian inversion has been widely used to solve this inverse problem, incorporating prior knowledge about emissions with a likelihood function derived from measurement data [Rodgers, 2000; Ganesan et al., 2014].
+However, these methods often rely heavily on accurate priors, which can introduce bias when prior information is incomplete or incorrect.
+In urban areas, where emissions can vary greatly in space and time, such methods may struggle to provide accurate results without prior assumptions.
+
+To overcome the limitations of Bayesian methods, recent studies have explored sparse reconstruction techniques.
+These methods assume that emissions are spatially sparse (i.e., only a few large sources contribute significantly to the total emissions) and use optimization techniques to recover the emission field from a limited set of measurements.
+Works by Benisch et al. (2020) and Turner et al. (2016) demonstrated that compressed sensing approaches can be effective for reconstructing urban GHG emissions, especially when combined with sparse priors or transforms, such as wavelets or discrete cosine transforms (DCT).
+
+% How do top down approaches work?
+% What is the inverse problem?
+% Benji deonstrated use of compressed sensing.
+% Formulate the problem formulation for this thesis here.
+% Meaning, what are the constraints.
+% Background GHG emissions.
+% Assume linear forward model.
+
+% This inverse problem can be solved using Bayesian inversion.
+% Mention l2 norm reconstruction.
 
 \section{Compressed Sensing}
-What is compressed sensing?
-When does it work?
-For emission fields in cities with point sources, this works well as the emission field is sparse.
+Compressed Sensing (CS) is a mathematical framework that enables the recovery of sparse signals from a reduced number of measurements.
+The fundamental assumption behind compressed sensing is that the signal of interest is either sparse or compressible in some domain, meaning that most of its components are zero or near-zero.
+This property allows for the accurate reconstruction of signals even when the number of measurements is significantly smaller than the number of unknowns.
 
-Here, I should explain the general theory of compressed sensing.
-Compressed sensing makes assumptions about the signal and forward model.
-Generally, signals are assumed to be sparse in some basis.
-If the forward model then fulfills certain criteria, reconstruction can be gurantueed.
-Sparsity can be 
-
-[Citations mssing]
-The most basic algorithm to reconstruct a signal would be minimize the L0 norm of a signal.
-The L0 norm is defined as the number of all non-zeros elements of a vector.
+The standard compressed sensing formulation in the context of urban GHG emission estimation is represented as follows:
 \begin{equation}
-    min L0 of  s.t. y = Ax
+    y = A x + \epsilon
 \end{equation}
-This problem is NP-hard and thus not practical in real world applications.
-Instead, it can be shown that minimizing the L1 norm yields the same result as above under certain conditions.
+where $y \in R$ represents the vector of measurements (e.g., atmospheric GHG concentrations), $A \in R^{m \times n}$ is the sensing matrix that models the relationship between the measurements and the emissions, $x \in R^n$ is the unknown signal (i.e., the emission field), and $\epsilon$ is the noise term, capturing errors or uncertainties in the measurement process.
+In urban settings, where emissions are typically sparse originating from a few dominant sources such as industrial facilities or traffic hubs compressed sensing provides a natural framework for recovering the emission field from a limited set of observations.
+
+One of the most commonly used approaches in compressed sensing is the Lasso algorithm, which solves the inverse problem by enforcing sparsity through L1-norm regularization.
+Another prominent approach is Basis Pursuit (BP), which directly seeks the sparsest solution, and its variant, Basis Pursuit with Denoising (BPDN), which extends the model to handle noisy measurements.
+These methods are crucial in emission estimation, where high-dimensional emission fields need to be recovered from a small number of measurements taken by atmospheric sensors.
+
+The Lasso (Least Absolute Shrinkage and Selection Operator) algorithm is a widely used method in compressed sensing due to its ability to enforce sparsity in the solution.
+It achieves this by solving the following optimization problem:
 \begin{equation}
-    \min()
+    \min{\left( \norm{Ax -y }_2^2 + \lambda\norm{x}_1 \right)}
 \end{equation}
-This algorithm is known as basis pursuit (BP).
 
-Basis pursuit is a very powerful algorithm, but assumes that measurements are ideal, i.e. not noisy.
-Extensions of this algorithm exist that deal with noise.
-This extension is called basis pursuit denoising (BPDN)
+In this formulation, $\norm{Ax -y }_2^2$ is the least-squares term that measures the discrepancy between the observed measurements $y$ and the predicted measurements $Ax$, while $\norm{x}_1$ represents the L1-norm of the signal, promoting sparsity.
+The parameter $\lambda$ controls the trade-off between the accuracy of the fit and the sparsity of the solution.
+A larger $\lambda$ results in a sparser solution, whereas a smaller $\lambda$ allows for a closer fit to the observed data but may introduce non-zero components in $x$, leading to less sparsity.
+
+% The Lasso algorithm is particularly suitable for GHG emission estimation because urban emission fields are often sparse, meaning that only a small fraction of locations contribute significantly to the total emissions.
+% By minimizing the L1-norm, Lasso effectively drives many components of the emission field to zero, thus recovering the sparse structure of the emissions.
+% However, the choice of $\lambda$ is crucial, as an excessively high value can result in an overly sparse solution that underestimates the true emissions, while a low value can lead to overfitting.
+
+Basis Pursuit (BP) is another widely adopted algorithm in compressed sensing, particularly when the goal is to find the sparsest possible solution that satisfies the measurement constraints exactly.
+Basis pursuit solves the following optimization problem:
 \begin{equation}
-    \min()
+    \min \norm{x}_1 \quad \text{subject to} \quad  Ax = y
 \end{equation}
-BPDN thus assumes that the noise level is known.
 
-Furthermore, regularization teqhniues exist to also sovle comrpessed sensing problems, for instance the Lasso regularizer which assumes a Laplacian prior.
+Here, the objective is to minimize the L1-norm of the signal, ensuring that the predicted measurements $A x$ match the observed measurements $y$ exactly.
+In contrast to Lasso, basis pursuit does not include a regularization term and instead focuses solely on finding the sparsest solution that satisfies the measurement equation.
+
+Basis pursuit is ideal when the measurement process is noiseless and the sensing matrix $A$ satisfies the Restricted Isometry Property (RIP), ensuring that different sparse signals remain distinguishable.
+However, in real-world applications, such as atmospheric GHG monitoring, measurements are rarely noise-free, and enforcing $Ax = y$ strictly can lead to inaccurate reconstructions when noise is present.
+
+To address the limitations of basis pursuit in noisy environments, Basis Pursuit with Denoising (BPDN) introduces a tolerance for noise in the measurement process.
+BPDN modifies the original basis pursuit problem by allowing deviations from the exact measurement equation:
 \begin{equation}
-    Lasso
+    \min \norm{x}_1 \quad \text{subject to} \quad  Ax -y \le \delta
 \end{equation}
-It can be shown that BPDN is equivalent to the Lasso regularizer for a certain alpha.
 
-For compressed sensing, signals must be sparse in some basis.
-This can be done with overcomplete dictionaries, transforms, etc.
-Common way is wavelet transform or discrete cosine transform.
+In this formulation, $\delta$ represents the allowable level of noise or error in the measurements.
+The L1-norm is minimized to promote sparsity in the signal, while the L2-norm ensures that the predicted measurements are close to the observed measurements within a defined noise threshold.
+The parameter $\delta$ allows BPDN to flexibly handle noisy data, making it more suitable for real-world scenarios, such as urban GHG emission estimation, where measurement noise is inevitable due to sensor inaccuracies and atmospheric variability.
 
-Recent developments make use of generative models for low dimensional representations which can be interpreted as sparse maps.
-This samples can be generated and thus represented with only few dimensions.
+Basis Pursuit with Denoising strikes a balance between sparsity and measurement accuracy, making it particularly useful when the sensing matrix $A$ does not fully satisfy RIP or when the measurement process involves significant noise.
+By allowing for a controlled level of error, BPDN can recover the sparse emission field without being overly sensitive to noise, resulting in more robust solutions.
 
-There are three main approaches to alleviate sparsity constraint.
-1) transforms, such as Wavelet
-2) only searching for unknown emissions and take esimtations as basis
-3) Deep learning based approaches
+% What is compressed sensing?
+% When does it work?
+% For emission fields in cities with point sources, this works well as the emission field is sparse.
 
+% Here, I should explain the general theory of compressed sensing.
+% Compressed sensing makes assumptions about the signal and forward model.
+% Generally, signals are assumed to be sparse in some basis.
+% If the forward model then fulfills certain criteria, reconstruction can be gurantueed.
+% Sparsity can be 
+
+% [Citations mssing]
+% The most basic algorithm to reconstruct a signal would be minimize the L0 norm of a signal.
+% The L0 norm is defined as the number of all non-zeros elements of a vector.
+% \begin{equation}
+%     min L0 of  s.t. y = Ax
+% \end{equation}
+% This problem is NP-hard and thus not practical in real world applications.
+% Instead, it can be shown that minimizing the L1 norm yields the same result as above under certain conditions.
+% \begin{equation}
+%     \min()
+% \end{equation}
+% This algorithm is known as basis pursuit (BP).
+
+% Basis pursuit is a very powerful algorithm, but assumes that measurements are ideal, i.e. not noisy.
+% Extensions of this algorithm exist that deal with noise.
+% This extension is called basis pursuit denoising (BPDN)
+% \begin{equation}
+%     \min()
+% \end{equation}
+% BPDN thus assumes that the noise level is known.
+
+% Furthermore, regularization teqhniues exist to also sovle comrpessed sensing problems, for instance the Lasso regularizer which assumes a Laplacian prior.
+% \begin{equation}
+%     Lasso
+% \end{equation}
+% It can be shown that BPDN is equivalent to the Lasso regularizer for a certain alpha.
+
+% For compressed sensing, signals must be sparse in some basis.
+% This can be done with overcomplete dictionaries, transforms, etc.
+% Common way is wavelet transform or discrete cosine transform.
+
+% Recent developments make use of generative models for low dimensional representations which can be interpreted as sparse maps.
+% This samples can be generated and thus represented with only few dimensions.
+
+% There are three main approaches to alleviate sparsity constraint.
+% 1) transforms, such as Wavelet
+% 2) only searching for unknown emissions and take esimtations as basis
+% 3) Deep learning based approaches
+\section{Generative Models}
+There are three main kinds of modern successful generative models in the context of sample generation.
+These models are not limited to image generation only.
+There are variational autoencoders, generative adverserial networks, and score based models.
+Both VAEs and GANs generate samples from lower dimensionional noise.
+Score based models generate samples by denoising previous samples, starting from noise.
+The noise and generated samples thus have same dimensions for score based models.
+Due to this, score based models are not directly applicable with the method from \parencite{CSUsingAI}.
+However, alternative approaches for score based models exist, which are not explored here.
+While GANs show higher quality generation for many different domains, GANs are difficult to train as the objectives can get very unstable.
+Therefore, for this thesis, VAE is chosen as the appropriate type of generative model
 
 \section{Generative Models for Compressed Sensing}
 Here I want to give an overview of generative models can be used for compressed sensing.
@@ -120,17 +211,10 @@ This equation is not quite right as it outsputs 2...
     z^* = \arg\min_{z, s}{\left(\norm{s}_1 + \gls{lambda} \norm{A \left( G(z) + s \right) - y}_2^2 \right)}
 \end{equation}
 
-\section{Generative Models}
-There are three main kinds of modern successful generative models in the context of sample generation.
-These models are not limited to image generation only.
-There are variational autoencoders, generative adverserial networks, and score based models.
-Both VAEs and GANs generate samples from lower dimensionional noise.
-Score based models generate samples by denoising previous samples, starting from noise.
-The noise and generated samples thus have same dimensions for score based models.
-Due to this, score based models are not directly applicable with the method from \parencite{CSUsingAI}.
-However, alternative approaches for score based models exist, which are not explored here.
-While GANs show higher quality generation for many different domains, GANs are difficult to train as the objectives can get very unstable.
-Therefore, for this thesis, VAE is chosen as the appropriate type of generative model
+In contrast to Bayesian inversion which heavily relies on a predefined prior, which can be a major limitation if the prior does not accurately reflect the true spatial distribution of emissions.
+A generative model would avoid this by learning the prior directly from the data.
+This makes it adaptable to various scenarios without the need to manually define the prior.
+MENTION THIS HERE.
 
 \section{Contributions}
 The point of this work is not to investigate whether compressed sensing theory can be applied in the context of 
