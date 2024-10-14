@@ -89,7 +89,8 @@ The standard compressed sensing formulation in the context of urban GHG emission
 where $y \in R$ represents the vector of measurements (e.g., atmospheric GHG concentrations), $A \in R^{m \times n}$ is the sensing matrix that models the relationship between the measurements and the emissions, $x \in R^n$ is the unknown signal (i.e., the emission field), and $\epsilon$ is the noise term, capturing errors or uncertainties in the measurement process.
 In urban settings, where emissions are typically sparse originating from a few dominant sources such as industrial facilities or traffic hubs compressed sensing provides a natural framework for recovering the emission field from a limited set of observations.
 
-One of the most commonly used approaches in compressed sensing is the Lasso algorithm, which solves the inverse problem by enforcing sparsity through L1-norm regularization.
+There are many sparse reconstruction algorithms.
+One of the most commonly used one is the Lasso algorithm, which solves the inverse problem by enforcing sparsity through L1-norm regularization.
 Another prominent approach is Basis Pursuit (BP), which directly seeks the sparsest solution, and its variant, Basis Pursuit with Denoising (BPDN), which extends the model to handle noisy measurements.
 These methods are crucial in emission estimation, where high-dimensional emission fields need to be recovered from a small number of measurements taken by atmospheric sensors.
 
@@ -107,7 +108,7 @@ A larger $\alpha$ results in a sparser solution, whereas a smaller $\alpha$ allo
 % By minimizing the L1-norm, Lasso effectively drives many components of the emission field to zero, thus recovering the sparse structure of the emissions.
 % However, the choice of $\lambda$ is crucial, as an excessively high value can result in an overly sparse solution that underestimates the true emissions, while a low value can lead to overfitting.
 
-Basis Pursuit (BP) is another widely adopted algorithm in compressed sensing, particularly when the goal is to find the sparsest possible solution that satisfies the measurement constraints exactly.
+Basis Pursuit (BP) is another widely adopted algorithm for sparse reconstruction, particularly when the goal is to find the sparsest possible solution that satisfies the measurement constraints exactly.
 Basis pursuit solves the following optimization problem:
 \begin{equation}
     \min \norm{x}_1 \quad \text{subject to} \quad  Ax = y
@@ -180,50 +181,6 @@ By allowing for a controlled level of error, BPDN can recover the sparse emissio
 % 1) transforms, such as Wavelet
 % 2) only searching for unknown emissions and take esimtations as basis
 % 3) Deep learning based approaches
-\section{Generative Models for Compressed Sensing}
-As mentioned earlier, compressed sensing relies heavily on the signals being sparse in some basis.
-Zanger et al. have demonstrated that most cities are sparse enough for sparse reconstruction.
-Inventories like TNO split the emissions into area and point sources.
-The point sources are individual locations like power plants.
-These point sources are typically well known and make up a large portion of emissions.
-Once these are ignored, the emission fields are not as sparse anymore and sparse reconstruction does not work as well anymore.
-In this thesis, point sources are assumed to be well known and the primary target is reconstruction of area or diffuse sources.
-Luckily, generative models can be used for compressed sensing.
-This alleviates the constraint of sparsity for compressed sensing.
-
-Here I want to give an overview of generative models can be used for compressed sensing.
-I should use the review as reference and give a short summary.
-
-The field of medical imaging has made advancements in the inverse problems using deep learning.
-A review of different deep learning approaches for CS is given in \parencite{ReviewCSUsingAI}
-They mention Bora et al \parencite{CSUsingAI}.
-Their approach has the limitation that the reconstruction is constrained to the range of the generator.
-This, however, can improved by also taking into account other things: \parencite{SparseCSUsingAI}.
-
-Make a diagram of how the generative models are used.
-\begin{figure}[h!]
-    \centering
-    \includegraphics[width=0.75\textwidth]{figures/02_related_work/latent_variable_optimization/build/latent_variable_optimization.pdf}
-    \caption{Bora et al Paper}
-\end{figure}
-
-Assuming a linear forward model $y = Ax + \epsilon$ with $A \in \mathbb{R}^{m \times n}$
-Given is a generator $G: \mathbb{R}^d \to \mathbb{R}^n$ and the compressed sensing problem.
-Solve the following minimization problem:
-\begin{equation}
-    \min_{z}{\left( \norm{A G(z) - y}_2^2 + \gls{gamma} R(z) \right)}
-\end{equation}
-An improvements is made by to further consider sparse deviations from the generated emission fields:
-This equation is not quite right as it outsputs 2...
-\begin{equation}
-    \min_{z, s}{\left(\norm{s}_1 + \gls{lambda} \norm{A \left( G(z) + s \right) - y}_2^2 \right)}
-\end{equation}
-
-In contrast to Bayesian inversion which heavily relies on a predefined prior, which can be a major limitation if the prior does not accurately reflect the true spatial distribution of emissions.
-A generative model would avoid this by learning the prior directly from the data.
-This makes it adaptable to various scenarios without the need to manually define the prior.
-MENTION THIS HERE.
-
 \section{Generative Models}
 There are three main kinds of modern successful generative models in the context of sample generation.
 These models are not limited to image generation only.
@@ -235,6 +192,93 @@ Due to this, score based models are not directly applicable with the method from
 However, alternative approaches for score based models exist, which are not explored here.
 While GANs show higher quality generation for many different domains, GANs are difficult to train as the objectives can get very unstable.
 Therefore, for this thesis, VAE is chosen as the appropriate type of generative model
+
+\section{Generative Models for Compressed Sensing}
+Compressed sensing typically relies on the assumption that the underlying signals are sparse in some basis.
+In urban emissions scenarios, Benji has shown that for many cities emissions are typically sparse, i.e. dominated by few large emitters.
+These large emitters are often covered as point sources in emission inventories.
+However, this thesis assumes that these large emitters are well known and must thus there is no need to reconstruct them.
+This changes the problem of atmospheric inversion.
+When looking at the diffuse or area sources, emission fields are less sparse and sparse reconstruction may fail.
+
+Generative models offer an alternative by relaxing the strict sparsity constraint.
+These models can learn complex representations directly from data and therefore circumvent the reliance on pre-specified sparse bases.
+Recent advancements in fields such as medical imaging have successfully applied generative models to solve compressed sensing problems (cite).
+For isntance, the score based method.
+
+For this thesis, we focus on the work by Bora et al. though.
+For instance, Bora et al. (2017) introduced a framework using generative models to reconstruct signals, leveraging deep learning to improve upon classical compressed sensing techniques.
+Their approach demonstrates that the performance of compressed sensing can be significantly enhanced by using neural networks trained to model the distribution of the underlying data.
+
+A typical generative model based compressed sensing approach operates as follows: given a linear measurement process $y = Ax + \epsilon$, where $A \in \mathbb{R}^{m \times n}$ is the sensing matrix, $x \in \mathbb{R}^n$ is the unknown emission field, and $\epsilon$ represents noise, the goal is to reconstruct $x$ from the measurements $y$.
+In this context, a generative model, $G: \mathbb{R}^d \to \mathbb{R}^n$, which maps a typically Gaussian distributed latent variable $z \in \mathbb{R}^d$ to the signal space, is used to solve the following optimization problem:
+\begin{equation}
+    \min_{z}{\left( \norm{A G(z) - y}_2^2 + \gls{gamma} R(z) \right)}
+\end{equation}
+
+Here, $R(z)$ is a regularization term that encourages desirable properties in the solution, and $\gls{gamma}$ controls the strength of the regularization.
+For instance, in the case of $z$ being Gaussian distributed, the regularization $R(z) = \norm{z}_2^2$ is used, similar to Ridge regression.
+The generative model $G$ represents the range of possible signals, and the optimization seeks the latent vector $z$ that, when passed through $G$, produces a signal that matches the measurements $y$ as closely as possible.
+In practice, as generative models $G$ are differentiable in $z$, this optimization problem is solved using numerical solvers with gradient descent as seen in Figure \ref{fig:gen_solver}.
+\begin{figure}[h!]
+    \centering
+    \includegraphics[width=0.75\textwidth]{figures/02_related_work/latent_variable_optimization/build/latent_variable_optimization.pdf}
+    \caption{Bora et al paper}
+    \label{fig:gen_solver}
+\end{figure}
+
+While this approach demonstrates promise, one significant limitation is that the reconstructed signal is constrained to lie within the range of the generator $G$.
+In other words, the reconstruction quality depends heavily on how well the generative model has learned the true distribution of the emission fields.
+To address this, subsequent work by Dhar et al. (2018) introduced methods that allow for sparse deviations from the generated signal, adding flexibility to the reconstruction.
+Their improved model solves the following optimization problem:
+\begin{equation}
+    \min_{z, s}{\left(\norm{s}_1 + \gls{lambda} \norm{A \left( G(z) + s \right) - y}_2^2 \right)}
+    \label{eq:sparse_deviation}
+\end{equation}
+The reconstructed signal is then $\hat{x} = G(z^\star) + s^\star$, where $z^\star$ and $s^\star$ are the solution to Equation \ref{eq:sparse_deviation}.
+
+% As mentioned earlier, compressed sensing relies heavily on the signals being sparse in some basis.
+% Zanger et al. have demonstrated that most cities are sparse enough for sparse reconstruction.
+% Inventories like TNO split the emissions into area and point sources.
+% The point sources are individual locations like power plants.
+% These point sources are typically well known and make up a large portion of emissions.
+% Once these are ignored, the emission fields are not as sparse anymore and sparse reconstruction does not work as well anymore.
+% In this thesis, point sources are assumed to be well known and the primary target is reconstruction of area or diffuse sources.
+% Luckily, generative models can be used for compressed sensing.
+% This alleviates the constraint of sparsity for compressed sensing.
+
+% Here I want to give an overview of generative models can be used for compressed sensing.
+% I should use the review as reference and give a short summary.
+
+% The field of medical imaging has made advancements in the inverse problems using deep learning.
+% A review of different deep learning approaches for CS is given in \parencite{ReviewCSUsingAI}
+% They mention Bora et al \parencite{CSUsingAI}.
+% Their approach has the limitation that the reconstruction is constrained to the range of the generator.
+% This, however, can improved by also taking into account other things: \parencite{SparseCSUsingAI}.
+
+% Make a diagram of how the generative models are used.
+% \begin{figure}[h!]
+%     \centering
+%     \includegraphics[width=0.75\textwidth]{figures/02_related_work/latent_variable_optimization/build/latent_variable_optimization.pdf}
+%     \caption{Bora et al Paper}
+% \end{figure}
+
+% Assuming a linear forward model $y = Ax + \epsilon$ with $A \in \mathbb{R}^{m \times n}$
+% Given is a generator $G: \mathbb{R}^d \to \mathbb{R}^n$ and the compressed sensing problem.
+% Solve the following minimization problem:
+% \begin{equation}
+%     \min_{z}{\left( \norm{A G(z) - y}_2^2 + \gls{gamma} R(z) \right)}
+% \end{equation}
+% An improvements is made by to further consider sparse deviations from the generated emission fields:
+% This equation is not quite right as it outsputs 2...
+% \begin{equation}
+%     \min_{z, s}{\left(\norm{s}_1 + \gls{lambda} \norm{A \left( G(z) + s \right) - y}_2^2 \right)}
+% \end{equation}
+
+% In contrast to Bayesian inversion which heavily relies on a predefined prior, which can be a major limitation if the prior does not accurately reflect the true spatial distribution of emissions.
+% A generative model would avoid this by learning the prior directly from the data.
+% This makes it adaptable to various scenarios without the need to manually define the prior.
+% MENTION THIS HERE.
 
 \section{Contributions}
 The point of this work is not to investigate whether compressed sensing theory can be applied in the context of 
