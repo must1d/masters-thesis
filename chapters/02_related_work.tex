@@ -4,13 +4,23 @@
 \chapter{Related Work}\label{chapter:related_work}
 
 \section{Emission Inventories}
-Emission inventories are essential tools for monitoring anthropogenic GHG emissions.
-They provide spatially and temporally resolved estimates of emissions based on activity data (e.g., fuel consumption, industrial processes) and emission factors.
-Inventories like the CAMS (Copernicus Atmosphere Monitoring Service) and TNO datasets provide detailed emission fields across Europe with varying spatial resolutions [CAMS 2020; TNO 2020].
-These inventories are typically used for bottom-up estimates, where emissions are computed by aggregating activity data from individual sectors, such as transportation, residential heating, and industry.
+Emission inventories are systematic compilations of the amounts of pollutants or greenhouse gases (GHGs) released into the atmosphere over a specified period within a defined geographic area.
+They serve as foundational tools for environmental management, policy formulation, and compliance with international agreements on climate change mitigation.
+Typically, these inventories are constructed using bottom-up methodologies, where emissions are calculated at the most granular level—individual sources—and then aggregated to provide a comprehensive overview.
+
+The bottom-up approach involves collecting detailed activity data for each emission source, such as fuel consumption rates, industrial production volumes, or agricultural practices.
+These data are then multiplied by corresponding emission factors, which represent the average emissions per unit of activity, to estimate the total emissions from that source.
+This method allows for a high degree of specificity and enables sectoral analysis, aiding in the identification of key emission contributors.
 
 While emission inventories offer detailed estimates, they often suffer from inaccuracies due to incomplete data, outdated emission factors, and the exclusion of unknown or hidden emission sources.
 These limitations highlight the need for top-down approaches, where atmospheric measurements are used to infer emission sources, potentially identifying overlooked emitters [Bergamaschi et al., 2018].
+
+% Emission inventories are essential tools for monitoring anthropogenic GHG emissions.
+% They provide spatially and temporally resolved estimates of emissions based on activity data (e.g., fuel consumption, industrial processes) and emission factors.
+% Inventories like the CAMS (Copernicus Atmosphere Monitoring Service) and TNO datasets provide detailed emission fields across Europe with varying spatial resolutions [CAMS 2020; TNO 2020].
+% These inventories are typically used for bottom-up estimates, where emissions are computed by aggregating activity data from individual sectors, such as transportation, residential heating, and industry.
+
+
 % Emission inventories are a estimation of emission fields
 % They serve two main purposes \parencite{CAMS-REG-v4}.
 % The first purpose is to 
@@ -42,10 +52,10 @@ These limitations highlight the need for top-down approaches, where atmospheric 
 %     \item 
 % \end{enumerate}
 
-\section{Inverse Problems in GHG Emission Context}
+\section{Atmospheric Inversion}
 Top-down approaches formulate the emission estimation problem as an inverse problem, where GHG concentrations measured at ground-based or satellite stations are used to infer the underlying emission fields.
 Add example for MUCCnet here.
-The relationship between measured concentrations and emissions can be expressed as $y= A x + \epsilon$, where $y$ represents the measured concentrations, $A$ is the transport matrix (e.g., a Gaussian plume or atmospheric transport model), and xx is the emission field.
+The relationship between measured concentrations and emissions can be expressed as $y= A x + \epsilon$, where $y$ represents the measured concentrations, $A$ is the atmospheric transport matrix (e.g., a Gaussian plume or atmospheric transport model), and xx is the emission field.
 Solving this inverse problem allows the reconstruction of emission fields based on the observed data.
 
 Bayesian inversion has been widely used to solve this inverse problem, incorporating prior knowledge about emissions with a likelihood function derived from measurement data [Rodgers, 2000; Ganesan et al., 2014].
@@ -86,12 +96,12 @@ These methods are crucial in emission estimation, where high-dimensional emissio
 The Lasso (Least Absolute Shrinkage and Selection Operator) algorithm is a widely used method in compressed sensing due to its ability to enforce sparsity in the solution.
 It achieves this by solving the following optimization problem:
 \begin{equation}
-    \min{\left( \norm{Ax -y }_2^2 + \lambda\norm{x}_1 \right)}
+    \min{\left( \norm{Ax -y }_2^2 + \alpha\norm{x}_1 \right)}
 \end{equation}
 
 In this formulation, $\norm{Ax -y }_2^2$ is the least-squares term that measures the discrepancy between the observed measurements $y$ and the predicted measurements $Ax$, while $\norm{x}_1$ represents the L1-norm of the signal, promoting sparsity.
-The parameter $\lambda$ controls the trade-off between the accuracy of the fit and the sparsity of the solution.
-A larger $\lambda$ results in a sparser solution, whereas a smaller $\lambda$ allows for a closer fit to the observed data but may introduce non-zero components in $x$, leading to less sparsity.
+The parameter $\alpha$ controls the trade-off between the accuracy of the fit and the sparsity of the solution.
+A larger $\alpha$ results in a sparser solution, whereas a smaller $\alpha$ allows for a closer fit to the observed data but may introduce non-zero components in $x$, leading to less sparsity.
 
 % The Lasso algorithm is particularly suitable for GHG emission estimation because urban emission fields are often sparse, meaning that only a small fraction of locations contribute significantly to the total emissions.
 % By minimizing the L1-norm, Lasso effectively drives many components of the emission field to zero, thus recovering the sparse structure of the emissions.
@@ -170,19 +180,17 @@ By allowing for a controlled level of error, BPDN can recover the sparse emissio
 % 1) transforms, such as Wavelet
 % 2) only searching for unknown emissions and take esimtations as basis
 % 3) Deep learning based approaches
-\section{Generative Models}
-There are three main kinds of modern successful generative models in the context of sample generation.
-These models are not limited to image generation only.
-There are variational autoencoders, generative adverserial networks, and score based models.
-Both VAEs and GANs generate samples from lower dimensionional noise.
-Score based models generate samples by denoising previous samples, starting from noise.
-The noise and generated samples thus have same dimensions for score based models.
-Due to this, score based models are not directly applicable with the method from \parencite{CSUsingAI}.
-However, alternative approaches for score based models exist, which are not explored here.
-While GANs show higher quality generation for many different domains, GANs are difficult to train as the objectives can get very unstable.
-Therefore, for this thesis, VAE is chosen as the appropriate type of generative model
-
 \section{Generative Models for Compressed Sensing}
+As mentioned earlier, compressed sensing relies heavily on the signals being sparse in some basis.
+Zanger et al. have demonstrated that most cities are sparse enough for sparse reconstruction.
+Inventories like TNO split the emissions into area and point sources.
+The point sources are individual locations like power plants.
+These point sources are typically well known and make up a large portion of emissions.
+Once these are ignored, the emission fields are not as sparse anymore and sparse reconstruction does not work as well anymore.
+In this thesis, point sources are assumed to be well known and the primary target is reconstruction of area or diffuse sources.
+Luckily, generative models can be used for compressed sensing.
+This alleviates the constraint of sparsity for compressed sensing.
+
 Here I want to give an overview of generative models can be used for compressed sensing.
 I should use the review as reference and give a short summary.
 
@@ -203,18 +211,30 @@ Assuming a linear forward model $y = Ax + \epsilon$ with $A \in \mathbb{R}^{m \t
 Given is a generator $G: \mathbb{R}^d \to \mathbb{R}^n$ and the compressed sensing problem.
 Solve the following minimization problem:
 \begin{equation}
-    z^* = \arg\min_{z}{\left( \norm{A G(z) - y}_2^2 + \gls{gamma} R(z) \right)}
+    \min_{z}{\left( \norm{A G(z) - y}_2^2 + \gls{gamma} R(z) \right)}
 \end{equation}
 An improvements is made by to further consider sparse deviations from the generated emission fields:
 This equation is not quite right as it outsputs 2...
 \begin{equation}
-    z^* = \arg\min_{z, s}{\left(\norm{s}_1 + \gls{lambda} \norm{A \left( G(z) + s \right) - y}_2^2 \right)}
+    \min_{z, s}{\left(\norm{s}_1 + \gls{lambda} \norm{A \left( G(z) + s \right) - y}_2^2 \right)}
 \end{equation}
 
 In contrast to Bayesian inversion which heavily relies on a predefined prior, which can be a major limitation if the prior does not accurately reflect the true spatial distribution of emissions.
 A generative model would avoid this by learning the prior directly from the data.
 This makes it adaptable to various scenarios without the need to manually define the prior.
 MENTION THIS HERE.
+
+\section{Generative Models}
+There are three main kinds of modern successful generative models in the context of sample generation.
+These models are not limited to image generation only.
+There are variational autoencoders, generative adverserial networks, and score based models.
+Both VAEs and GANs generate samples from lower dimensionional noise.
+Score based models generate samples by denoising previous samples, starting from noise.
+The noise and generated samples thus have same dimensions for score based models.
+Due to this, score based models are not directly applicable with the method from \parencite{CSUsingAI}.
+However, alternative approaches for score based models exist, which are not explored here.
+While GANs show higher quality generation for many different domains, GANs are difficult to train as the objectives can get very unstable.
+Therefore, for this thesis, VAE is chosen as the appropriate type of generative model
 
 \section{Contributions}
 The point of this work is not to investigate whether compressed sensing theory can be applied in the context of 
