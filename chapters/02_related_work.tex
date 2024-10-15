@@ -181,45 +181,80 @@ By allowing for a controlled level of error, BPDN can recover the sparse emissio
 % 1) transforms, such as Wavelet
 % 2) only searching for unknown emissions and take esimtations as basis
 % 3) Deep learning based approaches
-\section{Generative Models}
-There are three main kinds of modern successful generative models in the context of sample generation.
-These models are not limited to image generation only.
-There are variational autoencoders, generative adverserial networks, and score based models.
-Both VAEs and GANs generate samples from lower dimensionional noise.
-Score based models generate samples by denoising previous samples, starting from noise.
-The noise and generated samples thus have same dimensions for score based models.
-Due to this, score based models are not directly applicable with the method from \parencite{CSUsingAI}.
-However, alternative approaches for score based models exist, which are not explored here.
-While GANs show higher quality generation for many different domains, GANs are difficult to train as the objectives can get very unstable.
-Therefore, for this thesis, VAE is chosen as the appropriate type of generative model
-
 \section{Generative Models for Compressed Sensing}
-Compressed sensing typically relies on the assumption that the underlying signals are sparse in some basis.
-In urban emissions scenarios, Benji has shown that for many cities emissions are typically sparse, i.e. dominated by few large emitters.
-These large emitters are often covered as point sources in emission inventories.
-However, this thesis assumes that these large emitters are well known and must thus there is no need to reconstruct them.
-This changes the problem of atmospheric inversion.
-When looking at the diffuse or area sources, emission fields are less sparse and sparse reconstruction may fail.
+% \begin{enumerate}
+%     \item Introduction why generative models for comrpessed sensing make sensitive
+%     \item Introduce that in this thesis the main focus will be the work by Bora et al
+%     \item This work focuses on GAN type models, i.e. VAE and GANs
+%     \item Mention that there are other approaches like score based models with denoising and many different generative models
+%     \item Explain what GAN type models are
+%     \item Explain what the range of a generator is
+%     \item Explain the work by Bora et al.
+%     \item Explain the small improvement to Bora et al. work with the sparse offset
+% \end{enumerate}
 
-Generative models offer an alternative by relaxing the strict sparsity constraint.
-These models can learn complex representations directly from data and therefore circumvent the reliance on pre-specified sparse bases.
-Recent advancements in fields such as medical imaging have successfully applied generative models to solve compressed sensing problems (cite).
-For isntance, the score based method.
+Compressed sensing traditionally relies on the assumption that the underlying signals are sparse in some basis.
+However, this assumption may not hold in all applications.
+For instance, in urban emissions scenarios, while large point sources are often known or can be well-estimated, diffuse or area sources result in emission fields that are less sparse.
+This lack of sparsity challenges the effectiveness of conventional compressed sensing techniques, potentially leading to reconstruction failures.
 
-For this thesis, we focus on the work by Bora et al. though.
-For instance, Bora et al. (2017) introduced a framework using generative models to reconstruct signals, leveraging deep learning to improve upon classical compressed sensing techniques.
-Their approach demonstrates that the performance of compressed sensing can be significantly enhanced by using neural networks trained to model the distribution of the underlying data.
+Generative models offer a promising alternative by relaxing the strict sparsity constraint.
+These models learn complex representations directly from data, circumventing the need for pre-specified sparse bases.
+Recent advancements in fields such as medical imaging have successfully applied generative models to solve compressed sensing problems (cite). %\parencite{jalal2021robust}).
 
-A typical generative model based compressed sensing approach operates as follows: given a linear measurement process $y = Ax + \epsilon$, where $A \in \mathbb{R}^{m \times n}$ is the sensing matrix, $x \in \mathbb{R}^n$ is the unknown emission field, and $\epsilon$ represents noise, the goal is to reconstruct $x$ from the measurements $y$.
-In this context, a generative model, $G: \mathbb{R}^d \to \mathbb{R}^n$, which maps a typically Gaussian distributed latent variable $z \in \mathbb{R}^d$ to the signal space, is used to solve the following optimization problem:
+In this thesis, we focus on the pioneering work by Bora et al. (cite), framework that leverages generative models to improve upon classical compressed sensing techniques.
+Their approach demonstrates that by using neural networks trained to model the distribution of the underlying data, the performance of compressed sensing can be significantly enhanced.
+
+\subsection{Generative Models}
+
+Bora et al.'s framework primarily involves generative adversarial network (GAN) type models, including Variational Autoencoders (VAEs) and Generative Adversarial Networks (GANs).
+Both VAEs and GANs generate samples from lower-dimensional noise, transforming a latent variable $z \in \mathbb{R}^d$ into a data sample $x \in \mathbb{R}^n$ through a generator function $G: \mathbb{R}^d \to \mathbb{R}^n$.
+
+\textbf{Variational Autoencoders (VAEs)} are probabilistic models that encode input data into a latent space and then decode it back to the original space.
+They optimize a variational lower bound on the data likelihood, effectively learning a smooth latent space that captures the data distribution.
+
+\textbf{Generative Adversarial Networks (GANs)} consist of two neural networks—the generator $G$ and the discriminator $D$—trained in a minimax game.
+The generator tries to produce data that is indistinguishable from real data, while the discriminator attempts to differentiate between real and generated data.
+GANs are known for generating high-quality samples but can be challenging to train due to instability in the adversarial objectives.
+
+While GANs often show superior quality in sample generation across various domains, their training instability makes them less suitable for some applications.
+Therefore, this thesis chooses VAEs as the appropriate type of generative model due to their stability and structured latent space.
+
+Besides Bora et al. work there are many different approaches (cite the overview).
+For example, work using score-based or diffusion models (cite) in the context of medical imaging (cite).
+Additionally, normalizing flows (cite) also show promising reults (cite).
+But since the goal of this thesis is not to compare individual ML based compressed sensing approaches, the focus lies on Bora et al. work.
+
+\subsection{The Range of a Generator}
+
+The \textbf{range of a generator} $G$ refers to the set of all possible outputs $G(z)$ as $z$ varies over the latent space $\mathbb{R}^d$.
+This range represents the subset of the signal space $\mathbb{R}^n$ that the generative model can produce.
+In the context of compressed sensing, the reconstruction is constrained to lie within this range, which underscores the importance of the generative model accurately capturing the true data distribution.
+
+\subsection{Compressed Sensing Framework}
+
+Bora et al.'s approach operates by integrating generative models into the compressed sensing reconstruction process.
+Given a linear measurement model:
+\begin{equation}
+    y = A x + \epsilon
+\end{equation}
+where $A \in \mathbb{R}^{m \times n}$ is the sensing matrix, $x \in \mathbb{R}^n$ is the unknown signal (e.g., an emission field), $y \in \mathbb{R}^m$ represents the measurements, and $\epsilon$ denotes noise, the goal is to recover $x$ from $y$.
+
+The key idea is to leverage a pretrained generative model $G$ as a prior for $x$.
+In contrast to Bayesian inversion which heavily relies on a predefined prior, which can be a major limitation if the prior does not accurately reflect the true spatial distribution of emissions.
+A generative model would avoid this by learning the prior directly from the data.
+The reconstruction problem is formulated as an optimization over the latent space:
+
 \begin{equation}
     \min_{z}{\left( \norm{A G(z) - y}_2^2 + \gls{gamma} R(z) \right)}
 \end{equation}
-
 Here, $R(z)$ is a regularization term that encourages desirable properties in the solution, and $\gls{gamma}$ controls the strength of the regularization.
 For instance, in the case of $z$ being Gaussian distributed, the regularization $R(z) = \norm{z}_2^2$ is used, similar to Ridge regression.
 The generative model $G$ represents the range of possible signals, and the optimization seeks the latent vector $z$ that, when passed through $G$, produces a signal that matches the measurements $y$ as closely as possible.
-In practice, as generative models $G$ are differentiable in $z$, this optimization problem is solved using numerical solvers with gradient descent as seen in Figure \ref{fig:gen_solver}.
+
+Since $G$ is differentiable with respect to $z$, gradient-based optimization methods can be employed to solve the problem.
+The optimization seeks the latent vector $z^{\star}$ such that $G(z^{\star})$ best explains the measurements $y$.
+
 \begin{figure}[h!]
     \centering
     \includegraphics[width=0.75\textwidth]{figures/02_related_work/latent_variable_optimization/build/latent_variable_optimization.pdf}
@@ -227,15 +262,77 @@ In practice, as generative models $G$ are differentiable in $z$, this optimizati
     \label{fig:gen_solver}
 \end{figure}
 
-While this approach demonstrates promise, one significant limitation is that the reconstructed signal is constrained to lie within the range of the generator $G$.
-In other words, the reconstruction quality depends heavily on how well the generative model has learned the true distribution of the emission fields.
-To address this, subsequent work by Dhar et al. (2018) introduced methods that allow for sparse deviations from the generated signal, adding flexibility to the reconstruction.
-Their improved model solves the following optimization problem:
+One limitation of Bora et al.'s method is that the reconstructed signal $G(z^{\star})$ is confined strictly to the range of $G$.
+This constraint may be too restrictive if $G$ does not perfectly capture the true data distribution, leading to reconstruction errors.
+
+To address this issue, Dhar et al. (cite) proposed an extension that allows for sparse deviations from the generator's output.
+The modified optimization problem introduces an additional variable $s \in \mathbb{R}^n$ representing a sparse offset:
+
 \begin{equation}
     \min_{z, s}{\left(\norm{s}_1 + \gls{lambda} \norm{A \left( G(z) + s \right) - y}_2^2 \right)}
     \label{eq:sparse_deviation}
 \end{equation}
-The reconstructed signal is then $\hat{x} = G(z^\star) + s^\star$, where $z^\star$ and $s^\star$ are the solution to Equation \ref{eq:sparse_deviation}.
+where $\norm{s}_1$ promotes sparsity in the offset $s$ and the parameter $\lambda$ balances the sparsity of $s$ with the fit to the measurements $y$.
+
+The reconstructed signal is then given by $\hat{x} = G(z^\star) + s^\star$, where $z^\star$ and $s^\star$ are the solution to the optimization problem in Equation \ref{eq:sparse_deviation}.
+
+This extension allows the reconstruction to deviate slightly from the generator's range, accommodating components of the signal not captured by $G$, while maintaining overall consistency with the measurements and promoting sparsity in the deviations.
+
+% \section{Generative Models (old)}
+% There are three main kinds of modern successful generative models in the context of sample generation.
+% These models are not limited to image generation only.
+% There are variational autoencoders, generative adverserial networks, and score based models.
+% Both VAEs and GANs generate samples from lower dimensionional noise.
+% Score based models generate samples by denoising previous samples, starting from noise.
+% The noise and generated samples thus have same dimensions for score based models.
+% Due to this, score based models are not directly applicable with the method from \parencite{CSUsingAI}.
+% However, alternative approaches for score based models exist, which are not explored here.
+% While GANs show higher quality generation for many different domains, GANs are difficult to train as the objectives can get very unstable.
+% Therefore, for this thesis, VAE is chosen as the appropriate type of generative model
+
+% \section{Generative Models for Compressed Sensing (old)}
+% Compressed sensing typically relies on the assumption that the underlying signals are sparse in some basis.
+% In urban emissions scenarios, Benji has shown that for many cities emissions are typically sparse, i.e. dominated by few large emitters.
+% These large emitters are often covered as point sources in emission inventories.
+% However, this thesis assumes that these large emitters can be well estimated and can therefore be assumed to be known.
+% This changes the problem of atmospheric inversion.
+% When looking at the diffuse or area sources, emission fields are less sparse and sparse reconstruction may fail.
+
+% Generative models offer an alternative by relaxing the strict sparsity constraint.
+% These models can learn complex representations directly from data and therefore circumvent the reliance on pre-specified sparse bases.
+% Recent advancements in fields such as medical imaging have successfully applied generative models to solve compressed sensing problems (cite).
+% For isntance, the score based method.
+
+% For this thesis, we focus on the work by Bora et al. though.
+% For instance, Bora et al. (2017) introduced a framework using generative models to reconstruct signals, leveraging deep learning to improve upon classical compressed sensing techniques.
+% Their approach demonstrates that the performance of compressed sensing can be significantly enhanced by using neural networks trained to model the distribution of the underlying data.
+
+% A typical generative model based compressed sensing approach operates as follows: given a linear measurement process $y = Ax + \epsilon$, where $A \in \mathbb{R}^{m \times n}$ is the sensing matrix, $x \in \mathbb{R}^n$ is the unknown emission field, and $\epsilon$ represents noise, the goal is to reconstruct $x$ from the measurements $y$.
+% In this context, a generative model, $G: \mathbb{R}^d \to \mathbb{R}^n$, which maps a typically Gaussian distributed latent variable $z \in \mathbb{R}^d$ to the signal space, is used to solve the following optimization problem:
+% \begin{equation}
+%     \min_{z}{\left( \norm{A G(z) - y}_2^2 + \gls{gamma} R(z) \right)}
+% \end{equation}
+
+% Here, $R(z)$ is a regularization term that encourages desirable properties in the solution, and $\gls{gamma}$ controls the strength of the regularization.
+% For instance, in the case of $z$ being Gaussian distributed, the regularization $R(z) = \norm{z}_2^2$ is used, similar to Ridge regression.
+% The generative model $G$ represents the range of possible signals, and the optimization seeks the latent vector $z$ that, when passed through $G$, produces a signal that matches the measurements $y$ as closely as possible.
+% In practice, as generative models $G$ are differentiable in $z$, this optimization problem is solved using numerical solvers with gradient descent as seen in Figure \ref{fig:gen_solver}.
+% \begin{figure}[h!]
+%     \centering
+%     \includegraphics[width=0.75\textwidth]{figures/02_related_work/latent_variable_optimization/build/latent_variable_optimization.pdf}
+%     \caption{Bora et al paper}
+%     \label{fig:gen_solver}
+% \end{figure}
+
+% While this approach demonstrates promise, one significant limitation is that the reconstructed signal is constrained to lie within the range of the generator $G$.
+% In other words, the reconstruction quality depends heavily on how well the generative model has learned the true distribution of the emission fields.
+% To address this, subsequent work by Dhar et al. (2018) introduced methods that allow for sparse deviations from the generated signal, adding flexibility to the reconstruction.
+% Their improved model solves the following optimization problem:
+% \begin{equation}
+%     \min_{z, s}{\left(\norm{s}_1 + \gls{lambda} \norm{A \left( G(z) + s \right) - y}_2^2 \right)}
+%     \label{eq:sparse_deviation}
+% \end{equation}
+% The reconstructed signal is then $\hat{x} = G(z^\star) + s^\star$, where $z^\star$ and $s^\star$ are the solution to Equation \ref{eq:sparse_deviation}.
 
 % As mentioned earlier, compressed sensing relies heavily on the signals being sparse in some basis.
 % Zanger et al. have demonstrated that most cities are sparse enough for sparse reconstruction.
