@@ -16,42 +16,6 @@ This method makes sectoral analysis possible, thus enabling the identification o
 While emission inventories offer detailed estimates, they can be inaccurate due to incomplete data, outdated emission factors, and the exclusion of unknown or hidden emission sources.
 These limitations highlight the need for top-down approaches, which use atmospheric measurements to reconstruct emission sources.
 Top-down approaches hold the promise of identifying potentially overlooked emitters, enhancing the comprehensiveness of emission inventories.
-% Emission inventories are essential tools for monitoring anthropogenic GHG emissions.
-% They provide spatially and temporally resolved estimates of emissions based on activity data (e.g., fuel consumption, industrial processes) and emission factors.
-% Inventories like the CAMS (Copernicus Atmosphere Monitoring Service) and TNO datasets provide detailed emission fields across Europe with varying spatial resolutions [CAMS 2020; TNO 2020].
-% These inventories are typically used for bottom-up estimates, where emissions are computed by aggregating activity data from individual sectors, such as transportation, residential heating, and industry.
-
-
-% Emission inventories are a estimation of emission fields
-% They serve two main purposes \parencite{CAMS-REG-v4}.
-% The first purpose is to 
-% Questions:
-% \begin{enumerate}
-%     \item what are the purpose of emission inventories
-%     \item what are Emission Inventories
-%     \item How are Emission Inventories generated
-%     \item what are the problems with bottom-up approaches for GHG emissions? 
-%     \subitem may miss
-%     \item what are typical approaches to top-down?
-%     \item what are the challenges in top-down approaches?
-% \end{enumerate}
-% Then go over to Benjis work who has shown that 
-% For this work, same assumptions as in Benjis work hold, i.e. background GHG emissions are ignored.
-
-% Bottom-up approaches estimate emission fluxes by multiplying emission sources with their activity \parencite{BU-vs-TD} (also cite inventories).
-% In contrast, top-down approaches start from measurements of GHG conecntrations and invert the transport of molecules to find the sources from which they emitted.
-% One example for a measurement network is MUCCnet \parencite{MUCCnet}.
-% Bottom-up approaches can miss emitters due to unknown datas whereas top-down approaches can be able to capture unknown emitters with measurements.
-% Furthermore, 
-% Bottom-up and top-down approaches show gaps in their esimtations which can largely be explained by temporal variability \parencite{BU-vs-TD}.
-
-% There are essentially two approaches to estimating emissions.
-% The first approach starts from the and is called bottom-up approach.
-% The second approach starts from measurements and aims at inverting the atmospheric transport of molecules to determine the sources.
-
-% \begin{enumerate}
-%     \item 
-% \end{enumerate}
 
 \section{Atmospheric Inversion}
 Top-down approaches formulate the emission estimation problem as an inverse problem, where GHG concentrations measured at ground-based or satellite stations are used to infer the underlying emission fields.
@@ -67,16 +31,6 @@ In urban areas, where emissions can vary significantly in space and time, such m
 Recent studies have explored sparse reconstruction techniques, overcoming the above limitations.
 These methods assume that emissions are spatially sparse (i.e., only a few significant sources contribute significantly to the total emissions) and use optimization techniques to recover the emission field from a limited set of measurements.
 Works by Benisch et al. (2020) and Turner et al. (2016) demonstrated that compressed sensing approaches can be practical for reconstructing urban GHG emissions, especially when combined with sparse priors or transforms, such as wavelets or discrete cosine transforms (DCT).
-% How do top down approaches work?
-% What is the inverse problem?
-% Benji deonstrated use of compressed sensing.
-% Formulate the problem formulation for this thesis here.
-% Meaning, what are the constraints.
-% Background GHG emissions.
-% Assume linear forward model.
-
-% This inverse problem can be solved using Bayesian inversion.
-% Mention l2 norm reconstruction.
 
 \section{Compressed Sensing}
 Compressed Sensing (CS) is a mathematical framework that enables the recovery of sparse signals from a reduced number of measurements.
