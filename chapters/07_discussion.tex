@@ -3,29 +3,138 @@
 
 \chapter{Discussion}\label{chapter:discussion}
 
-\section{Model}
-The model is far from ideal.
-By using MCMC, it was obvious that the latent variable could not be modeled as Gaussian.
-By investigating the latent variable z it is obvious that the latent space does not follow a perfect Gaussian distribution.
-We suspect that this has to do with the lack of distinct training samples.
-Time sclaing does not fundamentally change the training sample.
-Thus, fundamentally only n cities are contained in the training data.
-We suspect that by gathering more training data, the model is able to capture the shape of the city emissions better.
-Then, one could try to use algorithms such as MCMC.
+\section{Discussion on Results}
 
-This is also supported by the fact that a regularization factor \gls{gamma} of 0 works the best.
+\subsection{VAE Benchmark}
 
-\section{Uncertainty Quantification}
-This is very difficult.
-But, with MCMC based approaches, one can get posterioir distribution.
+The experiments investigating the \gls{VAE}'s latent dimension provide insights into the trade-offs between model complexity and reconstruction performance.
+Larger latent dimensions $d$ expand the range of the generator, directly impacting the model's representational error.
+As $d$ increases, the model captures more complex structures in the emission fields, leading to a smaller representational error.
+However, larger dimensions also make the optimization more challenging, which is particularly noticeable when the number of measurements is low. 
+These results underscore the importance of the generator range.
+Ideally, this range would be as small as possible while still effectively capturing the emission field distribution.
 
-\section{Future Applciation}
-This thesis presents the idea of using machine learning based solving of inverse problems with a technique from 2017.
-The field of ML based inverse problems has made significant progress in the last year with research progress in generative AI.
-This thesis only shows that such techniques are applicable to the problem of reconstructing emitters from measurements.
-Thus, thie thesis opens the gates to exploring more of these approaches and apply state of the art techniques.
+The comparison between the \gls{VAE} and \gls{Lasso} approaches highlights that, while the \gls{VAE} exhibits generative capabilities specific to emission fields, the representational error remains large.
+This error requires a big latent dimension to be countered effectively.
+However, even with $d = 2048$, the \gls{VAE} is significantly outperformed by \gls{Lasso} at high measurement counts.
+This suggests that while the \gls{VAE} can approximate the distribution of emission fields, there is significant room for improvement.
+The observation that fine-tuning enhances the \gls{VAE}'s performance further supports this finding, as a generalized model would better handle test samples without fine-tuning.
 
-\section{To fill}
-\begin{itemize}
-    \item Uncertainty assessment possible with MCMC as MCMC outputs mean and variance for each pixel (citation needed)
-\end{itemize}
+\subsection{Atmospheric Inversion}
+
+The base \gls{VAE} models exhibit promising potential, showcasing competitive performance with \gls{BPDN} and \gls{LS} solvers for Munich and Zurich.
+Through fine-tuning, the \gls{VAE}s demonstrate significant enhancements over \gls{BPDN} and \gls{LS} for these cities, underscoring the value of this process.
+However, the results for Paris are different.
+The base models perform worse than \gls{BPDN} with \gls{DCT} or \gls{DWT} and \gls{LS}.
+Even with fine-tuning, the \gls{VAE} can only match the performance of \gls{BPDN} (\gls{DCT}) and \gls{LS}.
+This suggests that the \gls{VAE}'s generative range does not adequately capture Paris's emissions, potentially due to significant differences between Paris and the training samples.
+
+\section{Discussion on VAE}
+
+The previous discussion reveals that the \gls{VAE} does not capture the emission field distribution perfectly.
+High representational errors against \gls{Lasso} and the significant performance gains from fine-tuning illustrate this point.
+The worse performance for Paris implies that specific emission patterns remain outside the \gls{VAE}’s generative range.
+
+Further observations indicate that the trained models may not adequately map emission field space within the latent space.
+The Gaussian-distributed latent variable $z$ can describe the prior emission fluxes.
+Applying \gls{MCMC} \parencite{MCMC} algorithms with noisy observations can then solve the inverse problem as outlined in \cite{VAE-MCMC}.
+However, \gls{MCMC} failed to converge for many samples, such as Munich, whereas it worked well for randomly generated samples from Gaussian-distributed $z$ values.
+This suggests that the \gls{VAE}’s generator does not capture these samples fully.
+Lastly, the observation that no regularization term $\gamma$ produced optimal results suggests that latent variables corresponding to test samples lie far from the center, thus indicating that the \gls{VAE} does not capture these samples well.
+
+Overall, from these five observations, it can be argued that the trained \gls{VAE} failed to capture the emission field distribution fully.
+
+The key contributing factor to this limitation is likely the need for more diverse training samples.
+With $74$ unique cities in the training data, the information a machine learning model can extract is limited.
+It can be expected that with more unique training samples, the generalization capabilities of the \gls{VAE} improve \parencite{limited-data}, thus capturing the emission field distribution better.
+
+\section{Challenges}
+Besides the limitations regarding the \gls{VAE}, two further challenges of the presented method need to be discussed.
+The first challenge is the validation of the inverse models.
+The second challenge is the quantification of uncertainties in the inverse model outputs.
+
+\subsection{Validation of Inverse Model}
+A fundamental issue within this thesis is that the ground truth relies on emission inventories, which may contain inaccuracies due to various factors.
+This makes real-world validation challenging.
+Similarly, real-world measurements complicate validation since the ground truth is often unknown.
+A potential solution could involve controlled release experiments, where emissions are measured and quantified in a controlled environment to validate inversion methods.
+However, such experiments come with their challenges, mainly due to the resolution of the model and the scale of emission fluxes.
+Therefore, validation of the presented inverse model remains an open research field.
+
+\subsection{Uncertainty Quantification}
+
+The inverse models presented in this thesis, i.e., sparse reconstruction, \gls{LS}, and the \gls{VAE}, cannot quantify uncertainties in the reconstructed outputs.
+In particular, the \gls{VAE} approach presented in this thesis outputs an estimation of the \gls{MAP} but does not quantify the certainty of this estimation.
+However, extending the presented inverse model with uncertainty quantification is possible.
+Specifically, as outlined before, \gls{MCMC} \parencite{MCMC, VAE-MCMC} can be applied to sample from the posterior distribution of the predictions.
+This enables the computation of both the mean and variance, where the variance provides a measure of uncertainty in the predictions.
+That said, as initial attempts with \gls{MCMC} showed convergence issues for certain test samples, it is essential to first address the limitations in training sample diversity to ensure the robustness of the model’s posterior distribution before applying \gls{MCMC} for reliable uncertainty quantification.
+
+\section{Deviation from Inventories}
+
+The experiments and benchmarks demonstrate that fine-tuning significantly improves the relative error and \gls{SSIM} of reconstructions using the \gls{VAE}s.
+However, an important consideration regarding the evaluation methodology needs to be addressed.
+The models undergo fine-tuning using $2015$ inventory data with data augmentation using noise and various scaling factors, while testing is conducted on $2018$ data.
+Given the substantial similarity between the $2015$ and $2018$ datasets, the enhanced performance on reconstruction tasks is expected.
+However, this evaluation inherently assumes that the $2018$ inventory represents the ground truth.
+
+The critical question that remains unanswered is how these models perform when the actual ground truth deviates from the inventory data.
+This consideration is particularly relevant for fine-tuned models, where the assumed ground truth closely resembles the training data, unlike base models where test data differs significantly from training samples.
+
+Consequently, future work should extend the evaluation framework to assess the fine-tuned models' capability to reconstruct deviations from the actual inventories.
+For instance, further experiments could involve artificially injecting emission sources and evaluating the models' ability to accurately reconstruct these injected emitters.
+Such an approach would provide more robust insights into the models' true reconstruction capabilities when confronted with emission patterns that deviate from the training inventory data.
+
+\section{Future Applications}
+Despite the limitations and challenges outlined, several positive takeaways from the results can be leveraged for future work.
+
+Firstly, the base \gls{VAE} models have shown they can match the performance of traditional methods like \gls{LS} and sparse reconstruction techniques and, in certain low-noise cases, even outperform them.
+The fine-tuned models demonstrate even more promising results, significantly improving upon the base models and outperforming conventional approaches for Munich and Zurich.
+This is particularly notable given the limited training data, suggesting that \gls{VAE}s and similar machine-learning models have strong potential in atmospheric inversion tasks.
+
+From these observations, we can extrapolate that machine-learning models may play a crucial role in the future of atmospheric inversion.
+Addressing the primary issue of limited data is essential for realizing this potential.
+By scaling up the training data and including more diverse and unique samples, the generalization capabilities of machine learning models are expected to improve significantly, as suggested by \parencite{limited-data}. This would enable the models to better capture the distribution of emission fields and reduce representational errors.
+
+Furthermore, exploring different model architectures could help overcome current limitations.
+For example, training models like normalizing flows \parencite{NormalizingFlows} with no representational error could be highly beneficial.
+These models can capture the emission field distribution more accurately, leading to improved inversion results.
+
+In particular, many inspirations can be taken from different fields of research, such as medical imaging, where state-of-the-art inversion approaches rely heavily on machine learning models \parencite{ReviewCSUsingAI}.
+Techniques like score-based models \parencite{ScoreBased}, which have shown remarkable results in other domains, could be adapted and applied to atmospheric inversion.
+By integrating these advanced methods, it is possible to develop more accurate and robust inversion techniques.
+Overall, the findings of this thesis open new possibilities for future research.
+
+\section{Research Questions}
+This section revisits the research questions outlined at the start of this thesis and discusses whether these questions have been addressed through the experiments and analyses performed.
+\\\\
+\textbf{To what extent can a \gls{VAE} capture meaningful low-dimensional representations of area-source emissions in urban inventories?}
+\\
+The evaluation of this question is based on the benchmark inspired by the work of Bora et al., as detailed in Section \ref{section:vae_benchmark}.
+Experimental results indicate that \gls{VAE}s can capture a low-dimensional representation of emission fields.
+For instance, the \gls{VAE} with a latent dimension of $d=2048$ achieved an average reconstruction with a \gls{SSIM} of approximately $0.95$ and a relative error of around $20\%$.
+This corresponds to a dimensionality reduction of approximately $86.7\%$, showing that meaningful latent variables corresponding to test samples can be identified.
+These findings support the argument that the trained \gls{VAE}s successfully capture a low-dimensional representation of area-source emissions.
+\\\\
+\textbf{How does the choice of latent space dimensionality in the \gls{VAE} impact the quality and accuracy of emission reconstructions?}
+\\
+To answer this question, the benchmark in Section \ref{section:vae_benchmark} can be utilized, mainly focusing on experiments where the latent dimension $d$ varied across the values $\{ 256, 512, 1024, 2048 \}$.
+Results suggest a trade-off between the latent dimensionality and reconstruction performance.
+A higher latent dimension $d$ enhances representational complexity, thus reducing the representational error.
+However, a larger dimension makes it more challenging to efficiently search through the representation space, especially with lower measurement counts.
+In these cases, models with smaller latent dimensions performed better regarding \gls{SSIM} and relative error.
+This suggests an optimal target of minimizing the representational error while keeping $d$ as low as possible.
+\\\\
+\textbf{To what extent is the \gls{VAE} generalizable across diverse urban emission fields, or does it benefit from fine-tuning for specific cities?}
+\\
+This question can be answered by analyzing the results from Subsection \ref{subsection:latent_dimension} and Section \ref{section:atmospheric_inversion_results}.
+While the base models demonstrate a strong performance across various urban fields, fine-tuning significantly improves their relative error and \gls{SSIM}.
+This improvement is particularly evident in atmospheric inversion, where measurements are highly correlated and sparse. \gls{VAE}s show promising generalizability, but fine-tuning yields substantially better performance, especially in data-limited contexts.
+\\\\
+\textbf{How well does such a variational autoencoder perform in atmospheric inversion of area sources as a downstream task compared to state of the art approaches?}
+\\
+The results presented in Section \ref{section:atmospheric_inversion_results} indicate that baseline \gls{VAE} models perform competitively in atmospheric inversion tasks, particularly excelling in \gls{SSIM} metrics, as demonstrated by the results for Munich.
+For Paris, the reconstructions of the baseline \gls{VAE} fall behind the classical solvers as the emission flux field of Paris does not seem to be adequately represented in the generator range.
+However, with fine-tuning, \gls{VAE}s significantly outperform the classical solvers for Munich and Zurich, and reach comparable performance for Paris.
+The more detailed case study for Munich shows that, at a moderate to high \gls{SNR} of $20 \unit{dB}$, the baseline \gls{VAE} achieves higher \gls{SSIM} and lower relative error than the other classical solvers.
+The fine-tuned model outperforms other methods at a reduced \gls{SNR} of $5 \unit{dB}$, while the baseline \gls{VAE} fails to deliver adequate reconstructions.

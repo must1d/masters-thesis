@@ -3,110 +3,122 @@
 
 \chapter{Dataset}\label{chapter:dataset}
 
-The goal of this thesis is to provide a framework for compressed sensing, leveragin the strengths of deep generative models.
-Methods such as by Bora et al \parencite{CSUsingAI} show very good reconstructions with fewer measurements compared to classical compresses sensing approaches.
-Thus, this thesis aims at reconstructions which are highly ill-posed by having a lot of unknowns.
-For this, datasets of high spatial resolution inventories are required.
-To increase the number of unknowns, this thesis aims at sector-wise reconstructions, i.e. reconstructions of each sector, such as heating sector, individually.
-Datasets such as CAMS \parencite{CAMS} or TNO \parencite{TNO_LowRes}  provide GHG emissions in a 0.1 times 0.05 lat times long resolution which corresponds to ~5 by ~5 kilometers.
-This resolution is very low.
-For instance, a city contained within a 30km by 30km grid, would contain 6 by 6 cells.
-With 15 sectors, the number of unknown would be 540 for which deep learning does not make much sense as enough measurements can be made to reconstruct this perfectly using sparse reconstruction.
-Therefore, this thesis focuses on the high res $2015$ \parencite{TNO_HighRes15} and $2018$ \parencite{TNO_HighRes18} TNO datasets are used.
-These are two high resolution, roughly 1km by 1km, emission inventory and thus high resolution emission fields in urban environments can be extracted.
-The inventory contains GHG emissions for each GNFR sector \parencite{GNFR_Sectors}, with the road sector $F$ being split into $4$ sub sectors, for each coordinate in a defined grid within Europe.
+This thesis aims to develop a compressed sensing framework that leverages the strengths of deep generative models.
+Methods proposed by \textcite{CSUsingAI} have demonstrated superior reconstructions with fewer measurements than classical compressed sensing techniques.
+Consequently, this thesis focuses on reconstructing ill-posed problems with many unknowns.
+
+Datasets with high spatial resolution inventories are required to facilitate this.
+Datasets like CAMS-REG-v4 \parencite{CAMS} provide \gls{GHG} emissions at a resolution of $0.1^{\circ}$ latitude by $0.05^{\circ}$ longitude, which corresponds to approximately $5$ by $5$ kilometers over central Europe.
+This resolution is relatively low.
+For example, a city spanning a $30 \unit{km}$ by $30 \unit{km}$ area would be divided into a spatial grid of $6$ by $6$ cells.
+Therefore, this thesis utilizes the high-resolution inventories TNO-GHGco-v1.1 for $2015$ emissions \parencite{TNO_HighRes15} and TNO-GHGco-v4 for $2018$ emissions \parencite{TNO_HighRes18}.
+These inventories provide emissions at spatial resolution of ${{}^{1}\!/\!{}_{120}}^\circ$ latitude by ${{}^{1}\!/\!{}_{60}}^\circ$ longitude, or approximately $1 \unit{km}$ by $1 \unit{km}$.
+This high spatial resolution allows for extracting detailed emission fields in urban environments.
+The inventories include \gls{GHG} emissions for each GNFR sector, with the road sector (sector F) further divided into four subsectors, for each coordinate in a defined European grid.
 This results in $15$ emission values per gas per cell.
-For this thesis, only CO2 from fossil fuels are considered.
-However, the presented approaches can be directly applied for all types of GHG sources.
+
+In this thesis, only $\text{CO}_2$ emissions from fossil fuels (ff) are considered.
+However, the approaches presented can be directly applied to all \gls{GHG} sources.
+Furthermore, as point sources are assumed to be known, only diffuse or area sources are extracted from the inventories.
+Finally, it has to be noted that the following approximation is made: one grid cell has the spatial dimension of exactly $1 \unit{km}$ by $1 \unit{km}$.
+While this may result in improper scaling of values for many cities, the final results remain unaffected due to the invariance of the inverse problem to scale.
 
 \section{Urban Emission Fields}
 Urban environments differ from non-urban environments in terms of their emissions.
-For instance, urban environments often have a city center that generates a large portion of emissions as seen for example in Munich (Figure).
+For instance, urban environments often have a city center that generates a large portion of emissions, as can be seen in Munich in Figure \ref{fig:munich_emissions}.
 \begin{figure}
     \centering
     \begin{subfigure}{0.32\textwidth}
         \centering
         \includegraphics[width=\linewidth]{figures/03_dataset/munich/munich_2015_total_emissions.eps}
-        \caption{Total Emissions}
+        \caption{Total Emission Fluxes}
     \end{subfigure}
     \begin{subfigure}{0.32\textwidth}
         \centering
         \includegraphics[width=\linewidth]{figures/03_dataset/munich/munich_2015_sector_c.eps}
-        \caption{Sector C}
+        \caption{GNFR Sector C}
     \end{subfigure}
     \begin{subfigure}{0.32\textwidth}
         \centering
         \includegraphics[width=\linewidth]{figures/03_dataset/munich/munich_2015_sector_f1.eps}
-        \caption{Sector F1}
+        \caption{GNFR Sector F1}
     \end{subfigure}
-    \caption{Munich Area Sources TNO 2015}
+    \caption{$\text{CO}_2$ (ff) Emission Fluxes from Area Sources in Munich in 2015 \parencite{TNO_HighRes15}}
     \label{fig:munich_emissions}
 \end{figure}
-Therefore, as the focus of this thesis are urban environments, they have to be filtered from the TNO datasets.
+Therefore, as this thesis focuses on urban environments, they have to be filtered from the TNO-GHGco datasets.
 For this, several cities are selected from a public database by OpenDatasoft \parencite{OpenDataSoft}.
 Cities are filtered according to their population size.
-For this thesis, the population threshold is set to $100.000$.
+For this thesis, we define a population threshold of $100,000$.
+Any cities with a population greater than $100,000$ are selected for the dataset.
 
-From the filtered cities, the coordinates are used to extract emission fields.
-From the TNO dataset, $51$ by $51$ grids around the city center are extracted.
-This corresponds to a dimension of n km by n km.
-While most cities are not even close to this size, this allows to later crop the fields to a desired size.
-For this thesis, emission fields have $32$ by $32$.
+The coordinates of the filtered cities are then used to extract emission fields.
+From the inventories, $51$ by $51$ grid cells around the city center are extracted.
+This corresponds to a dimension of approximately $51 \unit{km}$ by $51 \unit{km}$. 
+While most cities are not even close to this size, this allows for later cropping of the fields to a desired size.
+For this thesis, emission fields have a final size of $32$ by $32$.
 
-Some cities may be too close to each other and thus result in leakage of data to test and validation sets.
+Some cities may be too close to each other, resulting in data leakage to test and validation sets.
 Thus, cities are filtered if they are too close to other cities.
-The following algorithm is used to guarantee no overlapping data.
-1) Get all cities currently extracted and determine the lat and lon distances to the current city
-2) Determine all cities that are within a threshold
-3) If there are none, add the current city and proceed to next city
-4) Else, check if the current city has a greater population size that all other cities that overlap
-5) If yes, removed the overlaping cities and add the current city to the cities.
-6) Else, ignore the city and proceed with next city
+The following algorithm guarantees that no cities in the dataset overlap.
 
-The overall resulting amount of city emission fields per year, $2015$ and $2018$, is then $106$.
-However, Bratislava has been identified as an outlier for this dataset.
-Therefore, Bratislava is removed and the number of cities is reduced to $105$.
-(Add method of how Bratislava was detected as outlier)
-A list of all cities with the corresponding coordinates is appended in the appendix.
+\begin{quotation}
+First, an empty list of extracted lists is initialized.
+Then, for each city, the latitude and longitude distances to all extracted cities are calculated.
+In the next step, the algorithm determines which cities fall within a defined distance threshold from the current city.
+If no cities are found within this threshold, the current city is added to the list, and the algorithm moves on to the next city.
+However, if overlapping cities are identified within the threshold, the population size of the current city is compared to those of the overlapping cities.
+If the current city has a larger population than all of the overlapping cities, these cities are removed, and the current city is added to the list.
+If the current city does not have a larger population, it is ignored, and the algorithm continues with the next city.
+\end{quotation}
 
-The number of extracted emission fields is not enough to train a generative model.
-Thus, temporal scaling factors from \parencite{ScalingFactors} are used to generate more samples.
+This extraction results in $106$ city emission fields per year, $2015$, and $2018$.
+However, we identified Bratislava as an outlier for this dataset due to its high \gls{SSIM} with a $0$ emission field.
+Therefore, we exclude Bratislava from the dataset, thus reducing the number of cities to $105$.
+
+This limited number of extracted emission fields is insufficient to train a generative model.
+Thus, temporal scaling factors from \parencite{ScalingFactors} are useful for artificially generating more samples.
 Scaling factors are applied to individual GNFR sectors.
-This results in $24 * 7 * 12 = 2016$ samples per city per year.
-The resulting combined dataset size is then $106 * 2 * 2016 = 45792$ individual emission fields with size $51$ by $51$.
-To reduce the memory overhead, scaling factors are applied at sampling time and only the original data is kept in memory.
+This results in $24 \cdot 7 \cdot 12 = 2016$ samples per city per year.
+The resulting combined dataset size is then $105 \cdot 2 \cdot 2016 = 423,360$ individual emission fields with size $51$ by $51$.
+Scaling factors are applied at sampling time to reduce memory overhead, thus only keeping the original data in memory.
 
 \section{Dataset Split}
-The emission fields are split into training, validation, and test data.
-The test data is used for experiments and evaluations and makes up $t$ percent of the data.
-The model does not see the test data during training.
-The validation data is used to evaluate the generalization capabilities of the model during training and makes up $v$ percent of data.
-Finally, the training data is used to train the model and updates its weights and makes up $1 - v - t$ of the data.
+The emission fields are divided into training, validation, and test sets.
+The test set comprises $t$ percent of the data and is used exclusively for experiments and evaluations; the model does not encounter this data during training.
+The validation set makes up $v$ percent of the data and is used during training to assess the model's generalization capabilities.
+The remaining data, i.e., $1-v-t$ percent, is allocated to the training set for updating the model's weights.
 
-Emissions of cities may vary in terms of their mean emissions.
-Splitting the dataset randomly may result in splits that are not representative of each other.
-For instance, a higher mean emission per city in the validation data results in a higher MSE in the validation step as the MSE is sensitive to scale.
-Thus, an appropriate split of data shall distribute cities equally in terms of their mean emissions.
-In other words, validation, test, and trianing data shall have the same distribution of city sizes to assess generalization abilities the best. 
-Furthermore, individual cities shall not leak into the other datasets.
-For instance, data from 2015 of Berlin shall not end up in the test set while 2018 data ends up in the train data.
-To achieve a split that satisfies both requirements and is reproducible, the following algorithm is used:
-First, fields are grouped according to their city names.
-Then, the city names are sorted according to their mean emissions in descending order.
-Afterwards, the test data is determined, by computing \dots (missing explanation of algorithm here)
+A random split could result in unrepresentative subsets since emission fields of cities may vary significantly in their mean emissions.
+For example, if the validation set contains cities with higher mean emissions, the \gls{MSE} during validation would be higher due to \gls{MSE}'s sensitivity to scale.
+Therefore, it is essential to distribute cities equally across the training, validation, and test sets concerning their mean emissions to best assess generalization abilities.
+Additionally, data from individual cities should not be split across different datasets to prevent data leakage.
+For instance, Berlin's data from $2015$ should not be in the test set if its $2018$ data is in the training set.
 
-First, $t$ percent of the data is assigned to the test data using this algorithm.
-Then, of the remaining $1 - t$ percent of data, $\frac{v}{1 - t}$ of data is assigned to the validation data.
-The remaining data is then assigned to the training set.
+The following algorithm fulfills both requirements from above while producing a reproducible split:
 
-Maybe make a diagram here.
+\begin{quotation}
+First, the algorithm groups the emission fields according to their city name.
+The emission fields are then sorted alphabetically according to the above names.
+In the second step, the algorithm sorts the emission fields by their mean emissions in descending order.
+Finally, it splits the dataset using equidistant indices to produce two datasets.
+\end{quotation}
+
+This algorithm is then used to assign $t$ percent of the data to the test set.
+Then, from the remaining $1 - t$ percent, $\frac{v}{1 - t}$ percent is assigned to the validation set.
+The rest is allocated to the training set.
 
 \section{Data Augmentation}
-To improve the generalization abilities of the model CITE, common image augmentation techniques are applied (to cite) to the emission fields in the training data.
-First, random cropping is used.
-Furthermore, a random horizontal flip and vertical flip are applied with probability $0.5$ each.
-Lastly, emission fields are randomly rotated by 90$\circ$ with probability of $0.5$.
-This results in $8$ different transformations, with one of them being the original emission field.
+To enhance the generalization capabilities of the model, we apply common image augmentation \parencite{ImageAugmentation} to the emission fields in the training dataset.
+The augmentation methods applied include random cropping, flipping, and rotation.
+To introduce variability in spatial positioning, emission fields are randomly cropped to a spatial dimension of $32$ by $32$.
+Additionally, with a probability of $0.5$, the emission fields undergo horizontal or vertical flipping.
+Similarly, with a probability of $0.5$, they are rotated by $90$ degrees.
+These techniques result in eight possible transformations for each emission field, including the original unaltered version.
+
+An example of this augmentation process is illustrated in Figure \ref{fig:nuernberg_emissions}.
+The figure shows the original and transformed emission fields for the Nuremberg area sources, highlighting how the summed emissions are altered through the applied transformations.
+
 \begin{figure}[h!]
     \centering
     \begin{subfigure}{0.4\textwidth}
@@ -119,29 +131,26 @@ This results in $8$ different transformations, with one of them being the origin
         \includegraphics[width=\linewidth]{figures/03_dataset/nuernberg/nuernberg_transformed.eps}
         \caption{Transformed}
     \end{subfigure}
-    \caption{Nuremberg Area Sources As Training Samples (summed emissions)}
+    \caption{Total $\text{CO}_2$ (ff) Emission Fluxes from Area Sources in Nuremberg in 2015 \parencite{TNO_HighRes15}}
     \label{fig:nuernberg_emissions}
 \end{figure}
 
-The validation and test emission fields are not transformed, except for a center crop to the expected dimensions.
+It is important to note that these transformations are not applied to the validation and test emission fields, except for a center crop to match the expected input dimensions.
 
 \section{Scaling}
-Scaling is an important factor for machine learning.
-Large-scale data can make training converge slow and instable (cite).
-Furthermore, regularization techniques such as batch normalization \parencite{BatchNorm} rely on scaled values (cite).
-A common technique for scaling values is min max scaling (cite).
-However, min max scaling is sensitive to outliers and thus not ideal for emission inventories where range of emissions within a city can largely differ.
-Instead, robust scaling (cite) can be applied.
+Scaling plays an important role in machine learning.
+Large-scale data can make training converge slowly and become unstable \parencite{DataScaling}.
+A common technique for scaling values is min-max scaling \parencite{MinMaxScaling}.
+However, min-max scaling is sensitive to outliers and thus not ideal for emission inventories where the range of emissions within a city can vary greatly.
+Instead, robust scaling can be applied.
 To determine a good scaling factor, the $95$th percentile of values is determined for each city in the training set.
 The inverse of the average is then used as the scaling factor.
-The resulting scaling factor is thus $\frac{1 a}{2.5 * 10^6 kg}$ after rounding.
-
+The resulting scaling factor is thus $\frac{1}{2.5 * 10^6}$ after rounding.
 All experiments are, without loss of generality, performed on the scaled data.
 
 \section{Case Studies}
-Besides the test data for evaluating the performance of the model, three cities are chosen for case studies.
-The cities are: Munich, Zurich, and Paris.
-These cities are chosen in accordance to the Icos project \parencite{Icos} and represent three different sizes, i.e. smaller, medium sized, and large, well.
-These cities are removed from the dataset before splitting, reducing the overall amount of available cities for training to $102$.
-
-These cities allow closer inspection of the outputs of different algorithms
+In addition to the test data used for model performance evaluation, three cities are selected for detailed case studies.
+The cities are Munich, Zurich, and Paris.
+These cities are chosen based on the ICOS Cities PAUL project \parencite{Icos} and represent a range of city sizes, from small to medium and large.
+In order to ensure unbiased results, these cities are excluded from the dataset prior to splitting, reducing the total number of cities available for training from $105$ to $102$.
+These cities allow closer inspection of the outputs of different algorithms.

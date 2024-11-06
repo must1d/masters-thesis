@@ -1,7 +1,36 @@
 % !TeX root = ../main.tex
 % Add the above to each chapter to make compiling the PDF easier in some editors.
 
-\chapter{Conclusion and Future Work}\label{chapter:conclusion}
+\chapter{Conclusion}\label{chapter:conclusion}
+This work constructed an urban emission flux field dataset based on the high-resolution TNO-GHGco inventories from $2015$ and $2018$.
+A generative model, specifically a \gls{VAE}, was trained on this dataset.
+The thesis then demonstrated how the \gls{VAE} could be applied to solve atmospheric inversion without the need for accurate priors while making certain assumptions, such as assuming that dominant point sources are known.
+% Notably, this assumption increases the challenge of classical sparse reconstruction algorithms.
+% By eliminating these point sources, emission fields are far less sparse than shown by previous work from Zanger et al.
 
-\section{Paradigm Shift}
-This work can be seen as paradigm shift in inversion approaches for atmospheric inversion.
+The thesis showed that \gls{VAE}s learn a compressed representation of the inventories by benchmarking these models based on previous work by \textcite{CSUsingAI}.
+Additionally, the model was evaluated against classical sparse reconstruction algorithms and the least squares approach across three case studies, Munich, Zurich, and Paris, in atmospheric inversion tasks using artificial footprints generated from a Gaussian plume model.
+Results showed that the base models were competitive with classical sparse reconstruction techniques and least squares for Munich and Zurich.
+However, the results for Paris were less favorable, indicating that the training data did not represent Paris's emissions well.
+The reconstructions were assessed using relative error and \gls{SSIM} with \gls{VAE}s, which generally demonstrated strength in spatial reconstruction, as evidenced by the relatively higher \gls{SSIM} scores.
+
+To explore whether a specialization of \gls{VAE}s to specific cities could be advantageous, they were fine-tuned on the emission fields of the three cities mentioned.
+The model weights were initialized from the base models and then updated via gradient descent.
+These fine-tuned models emerged as strong competitors, significantly outperforming other techniques for Munich and Zurich.
+For Paris, the fine-tuned model narrowed the gap, matching the relative error and \gls{SSIM} of the compared techniques.
+
+Overall, the range of the generator emerged as an essential concept. The range of a generator represents the signal space that the generative model can produce.
+Controlled benchmarks demonstrated the effect of the range by varying the latent dimension of the \gls{VAE}s.
+With a smaller latent dimension, the range of the generator is smaller; thus, searching for solutions is more manageable.
+With a larger latent dimension, the representation complexity is increased, making the representational error smaller.
+However, this benefit can only be realized from enough measurements.
+Ideally, the range of the generator should be as small as possible while maintaining low representational error.
+The fine-tuning step also adjusted this range to better capture specific cities.
+
+However, open work remains.
+Fine-tuned models still need to be evaluated for their ability to reconstruct deviations from inventories.
+Moreover, five points were presented suggesting that the trained generator does not fully capture the emission field distribution, with the primary reason being the limited amount of training data.
+A more comprehensive dataset is essential, though this is challenging as only some high-resolution inventories exist.
+
+Nevertheless, the results are promising, and this work marks a first step toward machine learning-based inverse modeling in atmospheric science.
+Much inspiration can be drawn from medical imaging, where machine learning-based inversion techniques are prevalent.

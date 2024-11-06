@@ -8,12 +8,14 @@
 \usepackage[%
   backend=biber,
   url=false,
-  style=authoryear,
-  maxnames=4,
-  minnames=3,
+  style=ieee,
+  maxnames=3,
+  minnames=1,
+  maxcitenames=1,
   maxbibnames=99,
   giveninits,
-  uniquename=init]{biblatex} % TODO: adapt citation style
+  uniquename=init,
+]{biblatex} % TODO: adapt citation style
 \usepackage{graphicx}
 \usepackage{svg}
 \usepackage{scrhack} % necessary for listings package
@@ -52,6 +54,9 @@
 \usepackage{ifthen}
 
 \usepackage{multirow}
+\usepackage{siunitx}
+
+\usepackage{tcolorbox}
 
 \addto\extrasamerican{
   \def\lstnumberautorefname{Line}
@@ -116,10 +121,15 @@
 
 % Settings for lstlistings
 \lstset{%
-  basicstyle=\ttfamily,
+  basicstyle=\ttfamily\small,
   columns=fullflexible,
+  % numbers=left,
+  % numberstyle=\tiny,
+  % stepnumber=1,
   autogobble,
   keywordstyle=\bfseries\color{TUMBlue},
   stringstyle=\color{TUMAccentGreen},
+  frame=single,
+  breaklines=true,
   captionpos=b
 }
