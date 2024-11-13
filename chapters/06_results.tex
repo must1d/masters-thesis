@@ -4,7 +4,7 @@
 \chapter{Results}\label{chapter:results}
 \section{Variational Auto Encoder Benchmark}\label{section:vae_benchmark}
 This section presents the experimental results to analyze the \gls{VAE} performance.
-The experiments primarily focus on evaluating the range of the generator in various settings, with particular attention to the Gaussian sensing matrix and sector-wise reconstruction.
+The experiments primarily focus on evaluating the range of the generator in various settings, with particular attention to the Gaussian sensing matrix and sector-wise reconstruction with $15360$ unknowns.
 In order to properly assess the range of the generators, the generative model solver without sparse offset is used.
 Three primary experiments are performed.
 The first experiment varies the latent dimension of the \gls{VAE}.
@@ -40,7 +40,7 @@ The results in Figure \ref{fig:experiment_latent_dim} show the clear trend that 
 Smaller models with lower latent dimensions plateau earlier, indicating that they are unable to fully utilize the additional information provided by more measurements.
 In contrast, larger models continue to improve with more measurements.
 
-In low-information or uncertain domains, smaller models perform better due to their smaller latent space, which simplifies optimization.
+In low-information or uncertain domains, smaller models perform better due to their smaller latent space, simplifying optimization.
 However, in cases where more information is available, larger models can capture more complex structures due to their wider range of the generator.
 This trend is expected, as larger latent spaces increase the representational power of the generator, but they also make the search for solutions more difficult due to the higher dimensionality of the optimization problem.
 The representational error (i.e., the error that persists at high measurement counts) is smaller for larger models, as they can capture a wider range of emission fields.
@@ -49,7 +49,7 @@ Overall, the results are consistent with the findings of \textcite{CSUsingAI}.
 \subsection{Fine-tuned Models vs Base Models}
 In this experiment, all models are compared to their fine-tuned counterparts.
 Fine-tuning is performed for the three case study cities: Munich, Paris, and Zurich.
-For each city, the number of measurements is varied, and the average improvements in relative error and \gls{SSIM} are reported in Table \ref{tab:fine_tuning} for each latent dimension for emission field of the corresponding city.
+For each city, the number of measurements is varied, and the average improvements in relative error and \gls{SSIM} are reported in Table \ref{tab:fine_tuning} for each latent dimension for the emission field of the corresponding city.
 
 \begin{table}[htb]
     \centering
@@ -78,8 +78,40 @@ For each city, the number of measurements is varied, and the average improvement
 
 The general trend shows that the models with smaller latent dimensions see the most significant improvement from fine-tuning.
 This makes sense because smaller models have a more limited range and are thus less likely to capture these emission fields through their generators.
-Regarding \gls{SSIM}, the changes are less significant overall, with slight decreases observed for Munich and Zurich but small improvements for Paris.
-The most considerable improvement in relative error is seen in Zurich.
+Regarding \gls{SSIM}, the changes are less significant overall, with slight decreases observed for Munich and Zurich but minor improvements for Paris.
+This indicates that the range of the fine-tuned models for Zurich and Munich can capture structural patterns slightly worse.
+A reason for this could be the injection of Gaussian noise during the fine-tuning process, which removes some of the structure in the training data.
+
+It may seem counterintuitive that achieving a lower relative error and a lower \gls{SSIM} simultaneously is possible.
+An example reconstruction run is made with the following setup to visualize this phenomenon.
+The Zurich emissions from $2018$ are taken as ground truth, and $5000$ measurements are taken at a \gls{SNR} of $20 \unit{dB}$.
+Two reconstructions are made: the first one using the generative model solver with the base \gls{VAE} with $d = 2048$, and the second one using the corresponding fine-tuned \gls{VAE}, also with $d = 2048$.
+
+\begin{figure}
+    \centering
+    \begin{subfigure}{0.32\textwidth}
+        \centering
+        \includegraphics[width=\linewidth]{figures/06_results/sector_wise_reconstruction/zürich/target.eps}
+        \caption{Target Emissions}
+    \end{subfigure}
+    \begin{subfigure}{0.32\textwidth}
+        \centering
+        \includegraphics[width=\linewidth]{figures/06_results/sector_wise_reconstruction/zürich/gen_model_m_5000_snr_20_db.eps}
+        \caption{VAE (2048)}
+    \end{subfigure}
+    \begin{subfigure}{0.32\textwidth}
+        \centering
+        \includegraphics[width=\linewidth]{figures/06_results/sector_wise_reconstruction/zürich/gen_model_fine_tuned_m_5000_snr_20_db.eps}
+        \caption{VAE (2048) Fine-tuned}
+    \end{subfigure}
+    \caption{Sector-wise Reconstructions of $\text{CO}_2$ (ff) Emission Fluxes from Area Sources in Zurich in 2018 (Sectors are Summed)}
+    \label{fig:sector_wise_zuricch}
+\end{figure}
+
+In Figure \ref{fig:sector_wise_zuricch}, the reconstructions and the ground truth of Zurich emissions are shown.
+Visually, the reconstruction of the base \gls{VAE} seems closer to the ground truth, which is also reflected in the \gls{SSIM}, with the base \gls{VAE} achieving a \gls{SSIM} of $0.948$ and the fine-tuned model $0.884$.
+However, the relative error of the reconstruction of the fine-tuned \gls{VAE} is smaller at $17.401\%$, while the base \gls{VAE} achieves a relative error of $20.797\%$.
+This shows that it is possible to achieve both a lower relative error and a lower \gls{SSIM} at the same time.
 
 \subsection{VAE vs Lasso}
 The following experiment compares the $2048$-dimensional \gls{VAE} against \gls{Lasso}, \gls{Lasso} with \gls{DCT}, and \gls{Lasso} with \gls{DWT}, again, on the test data without the case study cities.
@@ -120,7 +152,7 @@ At this point, the error of the \gls{VAE} is mainly the representational error o
 The significant difference between \gls{Lasso} and the \gls{VAE} indicates that much improvement needs to be made in terms of the generative capabilities of the \gls{VAE}.
 
 \section{Atmospheric Inversion}\label{section:atmospheric_inversion_results}
-This section presents the results of the \gls{VAE} applied to the atmospheric inversion problem as defined in Subsection \ref{subsec:atmospheric_inversion}.
+This section presents the results of the \gls{VAE} applied to the atmospheric inversion problem with $1024$ unknowns as defined in Subsection \ref{subsec:atmospheric_inversion}.
 This section uses the generative model solver with sparse offset to achieve optimal performance.
 All experiments were conducted on the three case study cities.
 
@@ -358,5 +390,5 @@ The base \gls{VAE}s have the most significant relative error, but the second-bes
     \end{minipage}
 \end{figure}
 
-Overall, this case study represents how difficult the atmospheric inversion task without accurate priors is.
-All solvers struggle to achieve a relative error of below $30\%$ and \gls{SSIM} beyond $0.75$, even in a low to moderate noise scenario.
+Overall, this case study represents the difficulty of the atmospheric inversion task without explicit emission flux field priors.
+All solvers struggle to achieve a relative error below $30\%$ and \gls{SSIM} beyond $0.75$, even in a low to moderate noise scenario.

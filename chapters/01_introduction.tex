@@ -8,7 +8,7 @@ As a result, climate mitigation has become increasingly important to address thi
 Emission inventories play an essential role in this effort.
 These are collections of emission data of pollutants or \gls{GHG}s released into the atmosphere over a specified period within a defined geographic area.
 They serve as foundational tools for environmental management, play a pivotal role in policy formulation, and are essential for compliance with international agreements on climate change mitigation.
-Emission inventories are constructed using various techniques, including bottom-up methodologies and spatial proxies.
+Emission inventories are constructed using various techniques, including the bottom-up and downscaling approaches.
 
 The bottom-up approach collects detailed activity data for each emission source, such as fuel consumption rates or industrial production volumes.
 Emission factors, representing the average emissions per unit of activity, are then multiplied by these data, resulting in an estimate of the total emissions from that source.
@@ -21,18 +21,18 @@ While emission inventories offer detailed estimates, they can be inaccurate due 
 These limitations underscore the need for inversion techniques, also called top-down approaches.
 Top-down approaches promise to close the gap between the actual emissions and those captured by the emission inventories, thus enhancing their comprehensiveness.
 
-Top-down approaches are based on solving ill-posed inverse problems, a widely studied research field.
+Top-down approaches using atmospheric concentration measurements are based on solving ill-posed inverse problems, a widely studied research field.
 These approaches formulate the emission estimation problem as an inverse problem, where \gls{GHG} concentrations measured at ground-based or satellite stations are used to infer the underlying emission flux fields based on atmospheric transport.
 Examples of sensor networks that perform such measurements include MUCCnet \parencite{MUCCnet} and BEACO\textsubscript{2}N \parencite{BEACON2N}, among others.
 
 From these measurements, top-down approaches reconstruct the emission field by applying inversion techniques.
 One such technique is Bayesian inversion, which updates prior knowledge about emissions using a likelihood function derived from measurement data.
 Prior knowledge refers to information about emissions before incorporating new measurement data.
-However, these methods rely heavily on accurate priors, i.e., assumptions about the emission fluxes, which can introduce bias when the prior information is incomplete or incorrect.
+However, these methods rely heavily on priors and accurate knowledge about their uncertainties, i.e., assumptions about the emission fluxes, which can introduce bias when information is incomplete or incorrect.
 
 There are many approaches that overcome this limitation of introduced bias, such as geostatistical approaches \parencite{Geostatical}, with recent studies exploring sparse reconstruction techniques \parencite{UrbanSparseReconstruction}. % could add some more here (see Zanger paper)
 Sparse reconstruction methods assume that emissions are spatially sparse (i.e., only a few significant sources contribute significantly to the total emissions) and use optimization techniques to recover the emission field from a limited set of measurements.
-\textcite{UrbanSparseReconstruction} demonstrated that compressed sensing approaches can be practical for reconstructing \gls{GHG} emissions in urban environments, especially when combined with sparse priors or transforms, such as \gls{DWT} \parencite{Wavelets} or \gls{DCT} \parencite{DCT}.
+\textcite{UrbanSparseReconstruction} demonstrated that compressed sensing approaches can be practical for reconstructing \gls{GHG} emissions in urban environments, especially when combined with domain transformations, such as \gls{DWT} \parencite{Wavelets} or \gls{DCT} \parencite{DCT}.
 
 Ill-posed inverse problems arise in many other research fields, including medical imaging.
 Significant advancements have been made in this field through machine learning-based compressed sensing techniques \parencite{ReviewCSUsingAI}.

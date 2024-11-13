@@ -18,7 +18,7 @@ The comparison between the \gls{VAE} and \gls{Lasso} approaches highlights that,
 This error requires a big latent dimension to be countered effectively.
 However, even with $d = 2048$, the \gls{VAE} is significantly outperformed by \gls{Lasso} at high measurement counts.
 This suggests that while the \gls{VAE} can approximate the distribution of emission fields, there is significant room for improvement.
-The observation that fine-tuning enhances the \gls{VAE}'s performance further supports this finding, as a generalized model would better handle test samples without fine-tuning.
+The observation that fine-tuning significantly enhances the \gls{VAE}'s performance further supports this finding, as a generalized model would better handle test samples without fine-tuning.
 
 \subsection{Atmospheric Inversion}
 
@@ -27,7 +27,7 @@ Through fine-tuning, the \gls{VAE}s demonstrate significant enhancements over \g
 However, the results for Paris are different.
 The base models perform worse than \gls{BPDN} with \gls{DCT} or \gls{DWT} and \gls{LS}.
 Even with fine-tuning, the \gls{VAE} can only match the performance of \gls{BPDN} (\gls{DCT}) and \gls{LS}.
-This suggests that the \gls{VAE}'s generative range does not adequately capture Paris's emissions, potentially due to significant differences between Paris and the training samples.
+This suggests that the \gls{VAE}'s generative range does not adequately capture Paris's emissions, potentially due to significant differences between Paris and the training samples and a lack of large cities in the training dataset.
 
 \section{Discussion on VAE}
 
@@ -72,7 +72,7 @@ That said, as initial attempts with \gls{MCMC} showed convergence issues for cer
 
 \section{Deviation from Inventories}
 
-The experiments and benchmarks demonstrate that fine-tuning significantly improves the relative error and \gls{SSIM} of reconstructions using the \gls{VAE}s.
+The experiments and benchmarks demonstrate that fine-tuning significantly improves the relative error and \gls{SSIM} of reconstructions using the \gls{VAE}s for atmospheric inversion tasks.
 However, an important consideration regarding the evaluation methodology needs to be addressed.
 The models undergo fine-tuning using $2015$ inventory data with data augmentation using noise and various scaling factors, while testing is conducted on $2018$ data.
 Given the substantial similarity between the $2015$ and $2018$ datasets, the enhanced performance on reconstruction tasks is expected.
@@ -128,8 +128,9 @@ This suggests an optimal target of minimizing the representational error while k
 \textbf{To what extent is the \gls{VAE} generalizable across diverse urban emission fields, or does it benefit from fine-tuning for specific cities?}
 \\
 This question can be answered by analyzing the results from Subsection \ref{subsection:latent_dimension} and Section \ref{section:atmospheric_inversion_results}.
-While the base models demonstrate a strong performance across various urban fields, fine-tuning significantly improves their relative error and \gls{SSIM}.
-This improvement is particularly evident in atmospheric inversion, where measurements are highly correlated and sparse. \gls{VAE}s show promising generalizability, but fine-tuning yields substantially better performance, especially in data-limited contexts.
+While the base models demonstrate a strong performance across various urban fields, fine-tuning significantly improves their relative error and \gls{SSIM} in atmospheric inversion tasks, where measurements are highly correlated and sparse.
+In more ideal cases, such as the VAE benchmarks based on Gaussian sensing matrices, an improvement could only be observed for the relative error.
+Overall, \gls{VAE}s show promising generalizability, but fine-tuning yields substantially better performance, especially in data-limited contexts.
 \\\\
 \textbf{How well does such a variational autoencoder perform in atmospheric inversion of area sources as a downstream task compared to state of the art approaches?}
 \\

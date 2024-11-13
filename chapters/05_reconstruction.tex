@@ -7,7 +7,7 @@
 This thesis investigates two types of inverse problems within the context of compressed sensing for emission field reconstruction.
 
 The first type of inverse problem considered involves a random Gaussian sensing matrix.
-These matrices are often considered optimal for compressed sensing because the rows representing individual measurements are highly likely to be uncorrelated.
+These matrices are often considered optimal for compressed sensing because the rows representing the sensitivities of individual measurements with respect to every grid cell are highly likely to be uncorrelated.
 This ensures that each measurement provides independent information, making them ideal for theoretical evaluations of inverse problem solvers.
 However, random Gaussian sensing matrices do not represent realistic atmospheric transport processes.
 In this problem, we perform sector-wise inversion, which is physically unrealistic, as measuring emissions from individual sectors is impossible.
@@ -62,7 +62,7 @@ Given the area sources $x_A = x$ and the known point sources $x_P$, the measurem
     y - A x_P &= A x_A + \epsilon \\
     \tilde{y} &= A x_A + \epsilon
 \end{align}
-where $\epsilon$ denotes the measurement noise, and $\tilde{y}$ is the adjusted measurement vector after subtracting the contribution from the known point sources.
+where $\epsilon$ denotes the measurement noise, and $\tilde{y}$ is the adjusted measurement vector after subtracting the contribution from the known point sources and background.
 The primary consideration here is the noise term $\epsilon$, particularly the \gls{SNR}.
 For simplicity, we define the \gls{SNR} with respect to the \gls{SP} of $A x_A$, i.e., the contribution from the area sources.
 

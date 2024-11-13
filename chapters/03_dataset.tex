@@ -75,6 +75,15 @@ If the current city does not have a larger population, it is ignored, and the al
 This extraction results in $106$ city emission fields per year, $2015$, and $2018$.
 However, we identified Bratislava as an outlier for this dataset due to its high \gls{SSIM} with a $0$ emission field.
 Therefore, we exclude Bratislava from the dataset, thus reducing the number of cities to $105$.
+The emission field of Bratislava can be seen in Figure \ref{fig:bratislava}.
+
+\begin{figure}[htb]
+    \centering
+    \includegraphics[width=0.4\textwidth]{figures/03_dataset/bratislava/bratislava.eps}
+    \caption{Total $\text{CO}_2$ (ff) Emission Fluxes from Area Sources in Bratislava in 2015 \parencite{TNO_HighRes15}}
+    \label{fig:bratislava}
+\end{figure}
+
 
 This limited number of extracted emission fields is insufficient to train a generative model.
 Thus, temporal scaling factors from \parencite{ScalingFactors} are useful for artificially generating more samples.
@@ -88,12 +97,13 @@ The emission fields are divided into training, validation, and test sets.
 The test set comprises $t$ percent of the data and is used exclusively for experiments and evaluations; the model does not encounter this data during training.
 The validation set makes up $v$ percent of the data and is used during training to assess the model's generalization capabilities.
 The remaining data, i.e., $1-v-t$ percent, is allocated to the training set for updating the model's weights.
+Concrete values for $v$ and $t$ are provided in Section \ref{section:architecture_search} and Subsection \ref{subsection:final_architecture}.
 
 A random split could result in unrepresentative subsets since emission fields of cities may vary significantly in their mean emissions.
 For example, if the validation set contains cities with higher mean emissions, the \gls{MSE} during validation would be higher due to \gls{MSE}'s sensitivity to scale.
 Therefore, it is essential to distribute cities equally across the training, validation, and test sets concerning their mean emissions to best assess generalization abilities.
 Additionally, data from individual cities should not be split across different datasets to prevent data leakage.
-For instance, Berlin's data from $2015$ should not be in the test set if its $2018$ data is in the training set.
+For instance, Berlin's data from $2015$ and all temporal variants should not be in the test set if its $2018$ data is in the training set.
 
 The following algorithm fulfills both requirements from above while producing a reproducible split:
 
@@ -119,7 +129,7 @@ These techniques result in eight possible transformations for each emission fiel
 An example of this augmentation process is illustrated in Figure \ref{fig:nuernberg_emissions}.
 The figure shows the original and transformed emission fields for the Nuremberg area sources, highlighting how the summed emissions are altered through the applied transformations.
 
-\begin{figure}[h!]
+\begin{figure}[htb]
     \centering
     \begin{subfigure}{0.4\textwidth}
         \centering

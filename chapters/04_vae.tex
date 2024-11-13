@@ -154,7 +154,7 @@ Variation 7 (Identity Mappings with Dropout) closely follows, with dropout helpi
 Conversely, Variation 3, which increased the model’s depth, struggled to match the performance of the baseline, suggesting that simply increasing depth can lead to over-parameterization and vanishing gradients without additional architectural changes.
 Other variations provided no improvements or even decreased performance, like Variation 1. 
 
-\subsection{Final Architecture}
+\subsection{Final Architecture} \label{subsection:final_architecture}
 Based on these insights, the final architecture incorporates identity mappings and dropout, as proposed in Variation 7, and increases the number of residual layers to three, as seen in Variation 5.
 These changes provide a balanced approach to improving generalization, reducing overfitting, and preserving high-quality reconstructions.
 The final encoder and decoder architectures can be seen in Figure \ref{fig:final_encoder} and Figure \ref{fig:final_decoder}.

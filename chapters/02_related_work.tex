@@ -12,10 +12,10 @@ The standard compressed sensing formulation in the context of urban \gls{GHG} em
 \begin{equation}
     y = A x + \epsilon
 \end{equation}
-where $y \in \mathbb{R}$ represents the vector of measurements (e.g., atmospheric \gls{GHG} concentrations), $A \in \mathbb{R}^{m \times n}$ is the sensing matrix that models the relationship between the measurements and the emissions, $x \in \mathbb{R}^n$ is the unknown signal (i.e., the emission field), and $\epsilon$ is the noise term, capturing errors or uncertainties in the measurement process.
+where $y \in \mathbb{R}$ represents the measurements (e.g., atmospheric \gls{GHG} concentrations excluding background emission concentrations), $A \in \mathbb{R}^{m \times n}$ is the sensing matrix that models the relationship between the measurements and the emissions, $x \in \mathbb{R}^n$ is the unknown signal (i.e., the emission field), and $\epsilon$ is the noise term, capturing errors or uncertainties in the measurement process.
 The sensing matrix $A$ represents the atmospheric transport of molecules and is derived from atmospheric transport models, such as STILT \parencite{STILT}.
-A row in the sensing matrix $A$ corresponds to the vectorized sensitivity of a sensor to each grid cell.
-Due to a lack of measurements compared to the number of unknowns and the high spatial correlation of these measurements, this problem is ill-posed.
+A row in the sensing matrix $A$ corresponds to the vectorized sensitivity of a sensor's measurement to each grid cell.
+Due to a lack of measurements compared to the number of unknowns and a high sensitivity to noise, this problem is ill-posed.
 
 There are many sparse reconstruction algorithms.
 One of the most commonly used ones is the \gls{Lasso} \parencite{Lasso}, which solves the inverse problem by enforcing sparsity through L1-norm regularization.
@@ -125,7 +125,7 @@ For instance, in the case of $z$ being Gaussian distributed, the regularization 
 The expression then represents a regularized optimization problem with Ridge (or Tikhonov) regularization \parencite{Ridge}.
 
 Since $G$ is differentiable with respect to $z$, gradient-based optimization methods can be employed to solve the problem.
-The optimization, seen in Figure \ref{fig:gen_solver}, seeks the latent vector $z^{\star}$ such that $G(z^{\star})$ best explains the measurements $y$.
+The optimization, seen in Figure \ref{fig:gen_solver}, seeks the latent vector $z^{\star}$ such that the reconstructed signal $\hat{x} = G(z^{\star})$ best explains the measurements $y$.
 
 \begin{figure}[htb]
     \centering
@@ -134,7 +134,7 @@ The optimization, seen in Figure \ref{fig:gen_solver}, seeks the latent vector $
     \label{fig:gen_solver}
 \end{figure}
 
-One limitation of above method is that the reconstructed signal $G(z^{\star})$ is confined strictly to the range of $G$.
+One limitation of the above method is that the reconstructed signal $G(z^{\star})$ is confined strictly to the range of $G$.
 This constraint may be too restrictive if $G$ does not perfectly capture the data distribution, leading to reconstruction errors.
 
 \textcite{SparseCSUsingAI} proposed an extension that allows for sparse deviations from the generator's output to address this issue.
@@ -154,27 +154,28 @@ This extension allows the reconstruction to deviate slightly from the generator'
 Metrics are required to assess the quality of reconstructions.
 In this thesis, we make use of two main metrics.
 The first metric is inspired by \textcite{UrbanSparseReconstruction} and is the \gls{RE}.
-Unlike the \gls{MSE} that is used as a reconstruction loss during training of the \gls{VAE}, the \gls{RE} is scale independent, making comparisons between cities consistent.
+Unlike the \gls{MSE} that is used as a reconstruction loss during training of the \gls{VAE}, the \gls{RE} is scale-independent, making comparisons between cities consistent.
 The \gls{RE} is defined as: 
 \begin{equation}
     \text{RE}(x, \hat{x}) = \frac{\norm{x - \hat{x}}_2}{\norm{x}_2}
 \end{equation}
-where $\hat{x}$ is the vectorized reconstructed emission field, and $x$ the vectorized target emission field.
+where $\hat{x}$ is the vectorized reconstructed emission field, and $x$ the vectorized ground-truth emission field.
 
 The second metric is the \gls{SSIM} \parencite{SSIM}.
 This metric compares the structural information between two data fields by considering changes in local statistics such as mean, variance, and covariance.
+By integrating these factors, \gls{SSIM} produces a single score between $0$ and $1$, where $1$ signifies identical fields.
 Focusing on structural similarity provides a valuable complement to the \gls{RE}, which measures the relative error in terms of Euclidean distance.
 
 \section{Research Questions}
-This thesis aims at answering the following research questions:
+This thesis aims to answer the following research questions:
 
 \begin{itemize}
     \item To what extent can a \gls{VAE} capture meaningful low-dimensional representations of area-source emissions in urban inventories?
     \item How does the choice of latent space dimensionality in the \gls{VAE} impact the quality and accuracy of emission reconstructions?
     \item To what extent is the \gls{VAE} generalizable across diverse urban emission fields, or does it benefit from fine-tuning for specific cities?
-    \item How effective is the \gls{VAE} in performing atmospheric inversion of area-source emissions, relative to established methods in compressed sensing?
+    \item How effective is the \gls{VAE} in performing atmospheric inversion of area-source emissions relative to established methods in compressed sensing?
 \end{itemize}
 
 While answering these questions, this thesis makes two major assumptions that impact the inverse problem.
-First, like \textcite{UrbanSparseReconstruction}, we assume background emissions are known.
+First, like \textcite{UrbanSparseReconstruction}, we assume background concentrations are known.
 Second, like \textcite{JonesInversion}, we also assume large emitters, or point sources, are known.
